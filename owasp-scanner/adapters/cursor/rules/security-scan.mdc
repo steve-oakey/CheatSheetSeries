@@ -1,0 +1,51 @@
+---
+description: OWASP security scanning rules for code review and vulnerability detection
+globs: ["**/*.java", "**/*.ts", "**/*.js", "**/*.py", "**/*.properties", "**/*.yml", "**/*.yaml", "Dockerfile*", "docker-compose*"]
+alwaysApply: false
+---
+
+# OWASP Security Scanner
+
+When asked to scan for security issues or review code for vulnerabilities, follow these rules.
+
+## Scanner Rules
+
+Load the detailed rules from:
+- Injection: `owasp-scanner/core/scanners/injection/rules.md`
+- XSS: `owasp-scanner/core/scanners/xss/rules.md`
+- Config: `owasp-scanner/core/scanners/config/rules.md`
+- Auth: `owasp-scanner/core/scanners/auth/rules.md`
+- API: `owasp-scanner/core/scanners/api/rules.md`
+- Supply Chain: `owasp-scanner/core/scanners/supply-chain/rules.md`
+
+## Quick Reference: Top 20 Critical Patterns
+
+### CRITICAL
+1. SQL injection via string concatenation (RULE-INJ-001, CWE-89)
+2. OS command injection via exec() (RULE-INJ-004, CWE-78)
+3. Hardcoded credentials (RULE-SC-001, CWE-798)
+4. Unsafe deserialization (RULE-INJ-008, CWE-502)
+5. XXE - XML parser without DTD disabled (RULE-INJ-006, CWE-611)
+6. JWT none algorithm (RULE-AUTH-003, CWE-347)
+7. Hardcoded encryption keys (RULE-SC-009, CWE-321)
+
+### HIGH
+8. XSS via innerHTML (RULE-XSS-001, CWE-79)
+9. Angular bypassSecurityTrust (RULE-XSS-005, CWE-79)
+10. SSRF via user-controlled URL (RULE-API-001, CWE-918)
+11. Weak password hashing (RULE-AUTH-001, CWE-916)
+12. Missing authorization (RULE-AUTH-007, CWE-862)
+13. Weak crypto (DES/3DES/RC4/ECB) (RULE-SC-003, CWE-327)
+14. Private keys in repo (RULE-SC-001, CWE-798)
+
+### MEDIUM
+15. CSRF disabled (RULE-CFG-004, CWE-352)
+16. CORS wildcard (RULE-CFG-003, CWE-346)
+17. Missing security headers (RULE-CFG-001, CWE-693)
+18. Docker running as root (RULE-CFG-009, CWE-250)
+19. Mass assignment (RULE-API-002, CWE-915)
+20. Token in localStorage (RULE-AUTH-005, CWE-922)
+
+## Report Format
+
+For each finding: Rule ID, severity, CWE, file:line, code snippet, recommended fix.

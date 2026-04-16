@@ -1,0 +1,117 @@
+# Injection Patterns: Java / Spring Boot
+
+## Dangerous Sinks (search for these)
+
+### SQL Injection
+```
+Statement\.executeQuery\(
+Statement\.execute\(
+Statement\.executeUpdate\(
+connection\.createStatement\(
+JdbcTemplate\.query\(.*\+
+JdbcTemplate\.update\(.*\+
+entityManager\.createNativeQuery\(.*\+
+entityManager\.createQuery\(.*\+
+session\.createQuery\(.*\+
+session\.createSQLQuery\(.*\+
+@Query\(.*\+
+@Query\(.*\?\#\{           # SpEL injection in Spring Data
+```
+
+### OS Command Injection
+```
+Runtime\.getRuntime\(\)\.exec\(
+new ProcessBuilder\(.*".*\s.*"   # single string with spaces = concatenated cmd+args
+ProcessBuilder.*\.command\(.*\+
+```
+
+### LDAP Injection
+```
+ctx\.search\(.*\+.*\)
+"cn=" \+ 
+"uid=" \+
+"ou=" \+
+DirContext.*search.*\+
+```
+
+### XML/XXE
+```
+DocumentBuilderFactory\.newInstance\(\)
+SAXParserFactory\.newInstance\(\)
+XMLInputFactory\.(newFactory|newInstance)\(\)
+TransformerFactory\.newInstance\(\)
+SchemaFactory\.newInstance\(\)
+SAXBuilder\(\)
+SAXReader\(\)
+XMLDecoder                              # ALWAYS UNSAFE
+javax\.xml\.bind\.Unmarshaller          # Check XMLInputFactory config
+```
+
+### Deserialization
+```
+ObjectInputStream\.readObject\(\)
+ObjectInputStream\.readUnshared\(\)
+ObjectMapper\.enableDefaultTyping\(\)
+ObjectMapper\.activateDefaultTyping\(\)
+@JsonTypeInfo\(use\s*=\s*JsonTypeInfo\.Id\.CLASS
+@JsonTypeInfo\(use\s*=\s*JsonTypeInfo\.Id\.MINIMAL_CLASS
+XStream\.fromXML\(
+new Yaml\(\)                            # Without SafeConstructor
+Kryo.*readClassAndObject\(
+```
+
+## Safe Alternatives (confirm these are used)
+
+### Parameterized SQL
+```
+connection\.prepareStatement\(.*\?\s
+pstmt\.setString\(
+pstmt\.setInt\(
+pstmt\.setLong\(
+session\.createQuery\(.*:param
+\.setParameter\("
+@Query\(.*:\w+                          # Named parameters
+@Param\("
+Restrictions\.eq\(
+Restrictions\.like\(
+CriteriaBuilder\.\w+\(
+```
+
+### Safe Command Execution
+```
+new ProcessBuilder\("cmd", "arg1"       # Separate array elements
+ProcessBuilder.*\.command\(List\.of\(
+```
+
+### Safe XML Configuration
+```
+setFeature\(".*disallow-doctype-decl", true\)
+setFeature\(XMLConstants\.FEATURE_SECURE_PROCESSING, true\)
+setProperty\(XMLInputFactory\.SUPPORT_DTD, false\)
+setProperty\("javax\.xml\.stream\.isSupportingExternalEntities", false\)
+setAttribute\(XMLConstants\.ACCESS_EXTERNAL_DTD, ""\)
+setAttribute\(XMLConstants\.ACCESS_EXTERNAL_STYLESHEET, ""\)
+setExpandEntityReferences\(false\)
+setXIncludeAware\(false\)
+```
+
+### Safe Deserialization
+```
+resolveClass.*whitelist                 # Custom ObjectInputStream with whitelist
+new SafeConstructor\(\)                 # SnakeYAML
+Kryo.*setRegistrationRequired\(true\)
+@JsonTypeInfo\(use\s*=\s*JsonTypeInfo\.Id\.NAME  # Name-based (with @JsonSubTypes)
+```
+
+## Spring-Specific Checks
+
+### Input Validation
+```
+@Valid                                  # Bean validation on request body
+@Validated                              # Spring validation
+@NotNull|@NotBlank|@NotEmpty            # Field-level constraints
+@Size\(|@Min\(|@Max\(|@Pattern\(       # Value constraints
+BindingResult                           # Validation error handling
+```
+
+Absence of `@Valid`/`@Validated` on `@RequestBody` parameters is a finding (RULE-INJ-013).

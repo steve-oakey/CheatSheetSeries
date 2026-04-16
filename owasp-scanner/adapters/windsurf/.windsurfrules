@@ -1,0 +1,25 @@
+# OWASP Security Scanner Rules
+
+When asked to scan for security issues, load detailed rules from `owasp-scanner/core/scanners/`.
+
+## Scanner Domains
+- injection/rules.md: SQL, OS command, LDAP, XXE, deserialization (15 rules)
+- xss/rules.md: XSS, DOM XSS, CSP, prototype pollution (16 rules)
+- config/rules.md: Headers, CORS, CSRF, Docker, K8s (15 rules)
+- auth/rules.md: Authentication, JWT, sessions, authorization (13 rules)
+- api/rules.md: SSRF, mass assignment, file upload, GraphQL (13 rules)
+- supply-chain/rules.md: Secrets, crypto, dependencies, CI/CD (10 rules)
+
+## Quick Scan: Top 10 Critical Checks
+1. String concat in SQL queries -> use PreparedStatement (CWE-89)
+2. Runtime.exec() with user input -> use ProcessBuilder with separate args (CWE-78)
+3. Hardcoded passwords/API keys -> use vault/env vars (CWE-798)
+4. ObjectInputStream.readObject() on untrusted data -> use JSON (CWE-502)
+5. XML parser without disallow-doctype-decl -> disable DTDs (CWE-611)
+6. innerHTML = userInput -> use textContent or DOMPurify (CWE-79)
+7. bypassSecurityTrust* (Angular) -> avoid or validate input (CWE-79)
+8. JWT Algorithm.none() -> specify algorithm explicitly (CWE-347)
+9. DES/3DES/RC4/ECB mode -> use AES-256-GCM (CWE-327)
+10. Math.random() for security -> use SecureRandom (CWE-338)
+
+Report findings as: Rule ID, severity, CWE, file:line, code, fix.

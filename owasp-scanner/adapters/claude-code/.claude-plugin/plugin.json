@@ -1,0 +1,8 @@
+{
+  "name": "owasp-security-scanner",
+  "version": "1.0.0",
+  "description": "OWASP Cheat Sheet-powered security scanning for source code. Detects injection, XSS, misconfigurations, auth weaknesses, API vulnerabilities, and supply chain risks.",
+  "author": {
+    "name": "Steve Oakey"
+  }
+}
