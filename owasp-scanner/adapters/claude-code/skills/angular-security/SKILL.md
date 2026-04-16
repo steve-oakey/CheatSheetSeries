@@ -12,6 +12,7 @@ Load the Angular pattern files from each scanner domain:
 - `${CLAUDE_PLUGIN_ROOT}/../../core/scanners/auth/patterns/angular.md`
 - `${CLAUDE_PLUGIN_ROOT}/../../core/scanners/api/patterns/angular.md`
 - `${CLAUDE_PLUGIN_ROOT}/../../core/scanners/supply-chain/patterns/angular.md`
+- `${CLAUDE_PLUGIN_ROOT}/../../core/scanners/ai-security/patterns/angular.md`
 
 Angular-specific checks:
 - `bypassSecurityTrustHtml/Script/Url/ResourceUrl/Style` -- Sanitization bypass

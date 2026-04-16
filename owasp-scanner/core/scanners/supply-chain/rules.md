@@ -144,3 +144,31 @@ Rules distilled from OWASP Cheat Sheet Series for detecting secrets in code, vul
   - `terraform.tfstate` not in `.gitignore`
 - **Fix**: Add sensitive file patterns to `.gitignore`. Audit git history for accidentally committed secrets.
 - **Reference**: Secrets_Management_Cheat_Sheet.md
+
+## RULE-SC-011: Missing Build Provenance and SBOM
+- **Severity**: MEDIUM
+- **CWE**: CWE-1104 (Use of Unmaintained Third Party Components)
+- **What to find**: No software bill of materials (SBOM) generation or build provenance verification
+- **Patterns**:
+  - No SBOM plugin in build config: `cyclonedx-maven-plugin`, `spdx-maven-plugin`, `@cyclonedx/bom`
+  - No SLSA provenance generation in CI/CD pipeline
+  - No artifact signing: `jarsigner`, `cosign`, `sigstore` absent from build/release
+  - No dependency lock file verification in CI
+  - `npm install` instead of `npm ci` in CI (ignores lockfile)
+- **Fix**: Generate SBOM with CycloneDX or SPDX. Sign artifacts. Use lockfile verification in CI. Adopt SLSA framework.
+- **Reference**: Software_Supply_Chain_Security_Cheat_Sheet.md, Dependency_Graph_SBOM_Cheat_Sheet.md
+
+## RULE-SC-012: Container Security Gaps
+- **Severity**: MEDIUM
+- **CWE**: CWE-250 (Execution with Unnecessary Privileges)
+- **What to find**: Container images with security misconfigurations beyond basic root/privilege checks
+- **Patterns**:
+  - Secrets passed via `ARG` or `ENV` in Dockerfile (visible in image history)
+  - No `HEALTHCHECK` directive (container can run in degraded state undetected)
+  - Multi-stage build not used (build tools and source in production image)
+  - `.dockerignore` missing or not excluding `.git`, `.env`, `node_modules`
+  - Base image not from trusted registry or not scanned
+  - `EXPOSE` on unnecessary ports
+  - Writable `/tmp` without `noexec` mount option
+- **Fix**: Use multi-stage builds. Pass secrets via runtime mount or orchestrator. Add HEALTHCHECK. Use `.dockerignore`. Scan base images.
+- **Reference**: Docker_Security_Cheat_Sheet.md, NodeJS_Docker_Cheat_Sheet.md

@@ -15,3 +15,6 @@
 | RULE-AUTH-011 | Password_Storage_Cheat_Sheet.md | Memory Safety |
 | RULE-AUTH-012 | OAuth2_Cheat_Sheet.md, SAML_Security_Cheat_Sheet.md | Configuration |
 | RULE-AUTH-013 | Credential_Stuffing_Prevention_Cheat_Sheet.md | Rate Limiting |
+| RULE-AUTH-014 | Forgot_Password_Cheat_Sheet.md | Token Generation and Storage |
+| RULE-AUTH-015 | Multifactor_Authentication_Cheat_Sheet.md | When to Require MFA |
+| RULE-AUTH-016 | Logging_Cheat_Sheet.md, Logging_Vocabulary_Cheat_Sheet.md | Sensitive Data in Logs |

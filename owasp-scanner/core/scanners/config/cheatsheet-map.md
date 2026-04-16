@@ -17,3 +17,9 @@
 | RULE-CFG-013 | Error_Handling_Cheat_Sheet.md | Error Handling |
 | RULE-CFG-014 | Logging_Cheat_Sheet.md | Security Events |
 | RULE-CFG-015 | HTTP_Headers_Cheat_Sheet.md | Cache-Control |
+| RULE-CFG-016 | Infrastructure_as_Code_Security_Cheat_Sheet.md | Security Defaults |
+| RULE-CFG-017 | TLS_Cipher_String_Cheat_Sheet.md, Transport_Layer_Security_Cheat_Sheet.md | Cipher Suite Selection |
+| RULE-CFG-018 | Access_Control_Cheat_Sheet.md | Enforcement |
+| RULE-CFG-016 | Infrastructure_as_Code_Security_Cheat_Sheet.md | Security Defaults |
+| RULE-CFG-017 | TLS_Cipher_String_Cheat_Sheet.md, Transport_Layer_Security_Cheat_Sheet.md | Cipher Suite Selection |
+| RULE-CFG-018 | Access_Control_Cheat_Sheet.md | Enforcement |

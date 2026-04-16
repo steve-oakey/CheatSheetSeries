@@ -13,6 +13,7 @@ Load the Java/Spring pattern files from each scanner domain:
 - `${CLAUDE_PLUGIN_ROOT}/../../core/scanners/auth/patterns/java-spring.md`
 - `${CLAUDE_PLUGIN_ROOT}/../../core/scanners/api/patterns/java-spring.md`
 - `${CLAUDE_PLUGIN_ROOT}/../../core/scanners/supply-chain/patterns/java-spring.md`
+- `${CLAUDE_PLUGIN_ROOT}/../../core/scanners/ai-security/patterns/java-spring.md`
 
 Spring-specific checks:
 - `csrf().disable()` or `csrf(csrf -> csrf.disable())` -- CSRF protection disabled

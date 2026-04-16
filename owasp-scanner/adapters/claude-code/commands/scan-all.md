@@ -5,7 +5,7 @@ allowed-tools:
   - Glob
   - Grep
   - Agent
-description: "Run a comprehensive OWASP security scan against the current project using all 6 scanner domains in parallel."
+description: "Run a comprehensive OWASP security scan against the current project using all 7 scanner domains in parallel."
 ---
 
 ## Your Task
@@ -14,7 +14,7 @@ Perform a full OWASP security scan of the current project.
 
 1. Read the orchestrator instructions from `${CLAUDE_PLUGIN_ROOT}/../../core/orchestrator/full-scan.md`
 2. Follow the workflow: detect stack, dispatch scanners, generate report
-3. Dispatch up to 6 scanner sub-agents in parallel (injection, xss, config, auth, api, supply-chain)
+3. Dispatch up to 7 scanner sub-agents in parallel (injection, xss, config, auth, api, supply-chain, ai-security)
 4. Each sub-agent should read its `rules.md` and appropriate `patterns/*.md` from the core scanners directory
 5. Compile all findings into a unified report using `${CLAUDE_PLUGIN_ROOT}/../../core/reporting/report-template.md`
 

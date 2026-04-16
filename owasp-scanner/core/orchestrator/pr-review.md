@@ -22,6 +22,8 @@ For each changed file, determine which scanner domains are relevant:
 - `*.yaml` (K8s): config
 - `pom.xml`/`package.json`: supply-chain
 - CI/CD pipeline files: supply-chain
+- AI/LLM integration code (`*AI*.java`, `*Chat*.java`, `*Agent*.java`): ai-security
+- Prompt template files (`*.prompt`, `*.md` prompts): ai-security
 
 ### Step 3: Targeted Scan
 

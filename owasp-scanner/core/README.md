@@ -1,6 +1,6 @@
 # OWASP Security Scanner Toolkit
 
-An agent-agnostic security scanning toolkit powered by the [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/). Distills 113 OWASP cheatsheets into 82 structured scanning rules across 6 vulnerability domains.
+An agent-agnostic security scanning toolkit powered by the [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/). Distills 113 OWASP cheatsheets into 103 structured scanning rules across 7 vulnerability domains.
 
 ## Architecture
 
@@ -20,11 +20,12 @@ owasp-scanner/
 |--------|-------|-------|-------------|
 | **injection** | 15 | SQL, OS command, LDAP, XXE, deserialization, NoSQL | 11 |
 | **xss** | 16 | Reflected/stored/DOM XSS, CSP, prototype pollution | 10 |
-| **config** | 15 | HTTP headers, CORS, CSRF, cookies, TLS, Docker, K8s | 15 |
-| **auth** | 13 | Password hashing, JWT, sessions, authorization, IDOR | 14 |
+| **config** | 18 | HTTP headers, CORS, CSRF, cookies, TLS, Docker, K8s, IaC | 15 |
+| **auth** | 16 | Password hashing, JWT, sessions, authorization, IDOR, MFA | 14 |
 | **api** | 13 | SSRF, mass assignment, file upload, GraphQL, WebSocket | 17 |
-| **supply-chain** | 10 | Secrets, weak crypto, dependencies, CI/CD, keys | 8 |
-| **Total** | **82** | | **75 primary + 38 supplementary** |
+| **supply-chain** | 12 | Secrets, weak crypto, dependencies, CI/CD, containers, SBOM | 8 |
+| **ai-security** | 13 | Prompt injection, LLM output validation, agent security, model ops | 3 |
+| **Total** | **103** | | **78 primary + 38 supplementary** |
 
 ## How to Use
 
@@ -36,13 +37,14 @@ cd owasp-scanner/adapters/claude-code
 ```
 
 Then in Claude Code:
-- `/scan-all` -- Full security scan (all 6 domains)
+- `/scan-all` -- Full security scan (all 7 domains)
 - `/scan-injection` -- Injection vulnerabilities only
 - `/scan-xss` -- XSS vulnerabilities only
 - `/scan-config` -- Configuration security
 - `/scan-auth` -- Authentication & authorization
 - `/scan-api` -- API security
 - `/scan-supply-chain` -- Supply chain & secrets
+- `/scan-ai` -- AI/LLM security
 
 Skills auto-trigger during normal development for real-time security feedback.
 

@@ -194,3 +194,85 @@ Rules distilled from OWASP Cheat Sheet Series for detecting security misconfigur
   - Missing `Pragma: no-cache` for HTTP/1.0 compatibility
 - **Fix**: Set `Cache-Control: no-store` on all responses containing sensitive data
 - **Reference**: HTTP_Headers_Cheat_Sheet.md
+
+## RULE-CFG-016: Infrastructure as Code Security Misconfiguration
+- **Severity**: HIGH
+- **CWE**: CWE-284 (Improper Access Control)
+- **What to find**: Insecure defaults in Terraform, CloudFormation, or Kubernetes manifests
+- **Patterns**:
+  - Security groups with `0.0.0.0/0` ingress on sensitive ports (22, 3389, 3306, 5432)
+  - S3 buckets with public access: `acl = "public-read"`, `block_public_acls = false`
+  - RDS/database instances with `publicly_accessible = true`
+  - IAM policies with `"Action": "*"` or `"Resource": "*"` (overly permissive)
+  - Missing encryption at rest: `encrypted = false`, no `kms_key_id`
+  - Missing logging/monitoring: no CloudTrail, no flow logs
+- **Fix**: Apply least privilege. Encrypt data at rest and in transit. Restrict network access. Enable logging.
+- **Reference**: Infrastructure_as_Code_Security_Cheat_Sheet.md
+
+## RULE-CFG-017: Weak TLS Cipher Suites
+- **Severity**: HIGH
+- **CWE**: CWE-326 (Inadequate Encryption Strength)
+- **What to find**: Deprecated or weak cipher suites in TLS configuration
+- **Patterns**:
+  - Cipher suites with `NULL`, `EXPORT`, `anon`, `RC4`, `DES`, `3DES`, `MD5`
+  - Cipher suites without forward secrecy (no `ECDHE`/`DHE`)
+  - TLS 1.0 or TLS 1.1 enabled alongside TLS 1.2+
+  - Cipher order not enforced server-side (`ssl_prefer_server_ciphers off`)
+  - RSA key exchange without PFS (e.g., `TLS_RSA_WITH_AES_*`)
+- **Fix**: Use only TLS 1.2+ with AEAD cipher suites (GCM/ChaCha20). Enforce server cipher order. Prefer ECDHE key exchange.
+- **Reference**: TLS_Cipher_String_Cheat_Sheet.md, Transport_Layer_Security_Cheat_Sheet.md
+
+## RULE-CFG-018: Access Control Gaps
+- **Severity**: MEDIUM
+- **CWE**: CWE-862 (Missing Authorization)
+- **What to find**: Endpoints or resources without proper access control enforcement
+- **Patterns**:
+  - `permitAll()` on non-public endpoints (admin, API, user profile)
+  - Missing `@PreAuthorize`/`@Secured`/`@RolesAllowed` on state-changing endpoints
+  - Deny-by-default not configured: `anyRequest().authenticated()` missing
+  - Role hierarchy not configured when needed
+  - Hard-coded role checks: `if (role == "admin")` instead of framework annotations
+  - Missing method-level security: `@EnableMethodSecurity` absent
+- **Fix**: Use deny-by-default. Apply `@PreAuthorize` on all endpoints. Enable method-level security. Use role hierarchy where appropriate.
+- **Reference**: Access_Control_Cheat_Sheet.md
+
+## RULE-CFG-016: Infrastructure as Code Security Misconfiguration
+- **Severity**: HIGH
+- **CWE**: CWE-284 (Improper Access Control)
+- **What to find**: Insecure defaults in Terraform, CloudFormation, or Kubernetes manifests
+- **Patterns**:
+  - Security groups with `0.0.0.0/0` ingress on sensitive ports (22, 3389, 3306, 5432)
+  - S3 buckets with public access: `acl = "public-read"`, `block_public_acls = false`
+  - RDS/database instances with `publicly_accessible = true`
+  - IAM policies with `"Action": "*"` or `"Resource": "*"` (overly permissive)
+  - Missing encryption at rest: `encrypted = false`, no `kms_key_id`
+  - Missing logging/monitoring: no CloudTrail, no flow logs
+- **Fix**: Apply least privilege. Encrypt data at rest and in transit. Restrict network access. Enable logging.
+- **Reference**: Infrastructure_as_Code_Security_Cheat_Sheet.md
+
+## RULE-CFG-017: Weak TLS Cipher Suites
+- **Severity**: HIGH
+- **CWE**: CWE-326 (Inadequate Encryption Strength)
+- **What to find**: Deprecated or weak cipher suites in TLS configuration
+- **Patterns**:
+  - Cipher suites with `NULL`, `EXPORT`, `anon`, `RC4`, `DES`, `3DES`, `MD5`
+  - Cipher suites without forward secrecy (no `ECDHE`/`DHE`)
+  - TLS 1.0 or TLS 1.1 enabled alongside TLS 1.2+
+  - Cipher order not enforced server-side (`ssl_prefer_server_ciphers off`)
+  - RSA key exchange without PFS (e.g., `TLS_RSA_WITH_AES_*`)
+- **Fix**: Use only TLS 1.2+ with AEAD cipher suites (GCM/ChaCha20). Enforce server cipher order. Prefer ECDHE key exchange.
+- **Reference**: TLS_Cipher_String_Cheat_Sheet.md, Transport_Layer_Security_Cheat_Sheet.md
+
+## RULE-CFG-018: Access Control Gaps
+- **Severity**: MEDIUM
+- **CWE**: CWE-862 (Missing Authorization)
+- **What to find**: Endpoints or resources without proper access control enforcement
+- **Patterns**:
+  - `permitAll()` on non-public endpoints (admin, API, user profile)
+  - Missing `@PreAuthorize`/`@Secured`/`@RolesAllowed` on state-changing endpoints
+  - Deny-by-default not configured: `anyRequest().authenticated()` missing
+  - Role hierarchy not configured when needed
+  - Hard-coded role checks: `if (role == "admin")` instead of framework annotations
+  - Missing method-level security: `@EnableMethodSecurity` absent
+- **Fix**: Use deny-by-default. Apply `@PreAuthorize` on all endpoints. Enable method-level security. Use role hierarchy where appropriate.
+- **Reference**: Access_Control_Cheat_Sheet.md

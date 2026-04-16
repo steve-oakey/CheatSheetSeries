@@ -5,10 +5,11 @@ When asked to scan for security issues, load detailed rules from `owasp-scanner/
 ## Scanner Domains
 - injection/rules.md: SQL, OS command, LDAP, XXE, deserialization (15 rules)
 - xss/rules.md: XSS, DOM XSS, CSP, prototype pollution (16 rules)
-- config/rules.md: Headers, CORS, CSRF, Docker, K8s (15 rules)
-- auth/rules.md: Authentication, JWT, sessions, authorization (13 rules)
+- config/rules.md: Headers, CORS, CSRF, Docker, K8s, IaC, TLS (18 rules)
+- auth/rules.md: Authentication, JWT, sessions, authorization, MFA (16 rules)
 - api/rules.md: SSRF, mass assignment, file upload, GraphQL (13 rules)
-- supply-chain/rules.md: Secrets, crypto, dependencies, CI/CD (10 rules)
+- supply-chain/rules.md: Secrets, crypto, dependencies, CI/CD, containers (12 rules)
+- ai-security/rules.md: Prompt injection, LLM output validation, agent security (13 rules)
 
 ## Quick Scan: Top 10 Critical Checks
 1. String concat in SQL queries -> use PreparedStatement (CWE-89)

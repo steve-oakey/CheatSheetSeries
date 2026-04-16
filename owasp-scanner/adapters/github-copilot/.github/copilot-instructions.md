@@ -19,6 +19,7 @@ The scanning rules are in `owasp-scanner/core/scanners/`. Each domain has:
 | auth | `core/scanners/auth/rules.md` | Authentication, JWT, sessions, authorization |
 | api | `core/scanners/api/rules.md` | SSRF, mass assignment, file upload, GraphQL |
 | supply-chain | `core/scanners/supply-chain/rules.md` | Secrets, crypto, dependencies, CI/CD |
+| ai-security | `core/scanners/ai-security/rules.md` | Prompt injection, LLM output validation, agent security |
 
 ## How to Scan
 

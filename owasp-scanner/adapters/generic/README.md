@@ -16,6 +16,6 @@ Use `system-prompt.md` with any AI coding agent that accepts custom instructions
 
 ## For Deeper Scanning
 
-The generic prompt provides a summary of the top patterns. For comprehensive scanning with all 82 rules:
+The generic prompt provides a summary of the top patterns. For comprehensive scanning with all 103 rules:
 1. Copy the relevant `rules.md` from `core/scanners/` into the conversation
 2. Or point the agent to the full `core/` directory if it has file access

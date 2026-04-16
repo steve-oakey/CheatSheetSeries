@@ -115,3 +115,71 @@ BindingResult                           # Validation error handling
 ```
 
 Absence of `@Valid`/`@Validated` on `@RequestBody` parameters is a finding (RULE-INJ-013).
+
+## Stored Procedure SQL Injection (RULE-INJ-014)
+
+### Dangerous: Java stored procedure calls without parameterization
+```
+connection\.createStatement\(\).*"EXEC   # Statement with EXEC (no binding)
+connection\.createStatement\(\).*"CALL   # Statement with CALL (no binding)
+"\{call\s+\w+\(" \+ .*\+.*"\)\}"       # JDBC call syntax with string concat
+JdbcTemplate\.update\("EXEC.*\+         # JdbcTemplate with EXEC + concat
+JdbcTemplate\.query\("EXEC.*\+          # JdbcTemplate query with EXEC + concat
+entityManager\.createNativeQuery\("EXEC.*\+  # Native query with EXEC + concat
+entityManager\.createNativeQuery\("CALL.*\+  # Native query with CALL + concat
+@Query\(.*nativeQuery.*EXEC.*\#\{       # SpEL injection in native stored proc call
+```
+
+### Dangerous: Dynamic SQL in stored procedure definitions (SQL files)
+```
+DECLARE\s+@sql.*NVARCHAR               # T-SQL dynamic SQL variable
+SET\s+@sql\s*=.*\+\s*@                  # Building SQL via concatenation with params
+EXEC\s*\(\s*@sql\s*\)                   # Executing concatenated SQL variable
+EXECUTE\s+IMMEDIATE\s+.*\|\|           # Oracle concat in EXECUTE IMMEDIATE
+```
+
+### Safe: Parameterized stored procedure calls in Java
+```
+connection\.prepareCall\("\{call.*\?    # CallableStatement with ? placeholders
+CallableStatement.*\.setString\(        # Bound parameter (String)
+CallableStatement.*\.setInt\(           # Bound parameter (int)
+CallableStatement.*\.setLong\(          # Bound parameter (long)
+CallableStatement.*\.registerOutParameter # Output parameter registration
+SimpleJdbcCall\(                        # Spring SimpleJdbcCall (auto-parameterized)
+new SimpleJdbcCall.*withProcedureName   # Named procedure call
+SimpleJdbcCall.*addDeclaredParameter    # Declared parameter binding
+SimpleJdbcCall.*execute\(.*MapSqlParameterSource  # Parameterized execution
+StoredProcedure.*declareParameter       # Spring StoredProcedure with declared params
+@Procedure\(                            # Spring Data JPA @Procedure (auto-parameterized)
+```
+
+## XPath/XQuery Injection (RULE-INJ-015)
+
+### Dangerous: Java XPath with string concatenation
+```
+XPathFactory\.newInstance\(\)\.newXPath\(\)\.evaluate\(.*\+   # XPath evaluate + concat
+XPathFactory\.newInstance\(\)\.newXPath\(\)\.compile\(.*\+    # XPath compile + concat
+xpath\.evaluate\(.*\+.*request\.getParameter   # XPath + request parameter
+xpath\.compile\(.*\+.*request\.getParameter     # XPath compile + request param
+"//\w+\[@\w+=.*'"\s*\+                  # XPath attribute query with concat
+"//\w+\[\w+=.*'"\s*\+                   # XPath predicate query with concat
+XPathExpression.*=.*xpath\.compile\(.*\+ # XPath expression with dynamic compilation
+```
+
+### Dangerous: XQuery in Java
+```
+XQDataSource.*createExpression\(.*\+    # XQuery expression with concat
+XQExpression.*executeQuery\(.*\+        # XQuery exec with concat
+Saxon.*XQueryCompiler.*compile\(.*\+    # Saxon XQuery with concat
+BaseXClient.*execute\(.*\+.*userInput   # BaseX XQuery with user input
+```
+
+### Safe: Parameterized XPath in Java
+```
+XPathVariableResolver                   # Custom variable resolver (safe)
+xpath\.setXPathVariableResolver\(       # Bound variables (safe)
+XPathConstants\.                        # Using typed return constants
+xpath\.evaluate\(.*XPathConstants       # Typed XPath evaluation
+StringEscapeUtils\.escapeXml            # XML escaping before XPath (partial)
+@XmlElement.*@Pattern                   # Schema + regex validation before XPath
+```

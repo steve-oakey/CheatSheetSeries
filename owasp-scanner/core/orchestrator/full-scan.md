@@ -1,6 +1,6 @@
 # Full Security Scan Orchestrator
 
-Run a comprehensive OWASP security scan against the target project using all 6 scanner domains.
+Run a comprehensive OWASP security scan against the target project using all 7 scanner domains.
 
 ## Workflow
 
@@ -37,7 +37,10 @@ Run all 6 scanners, each following its `prompt.md` instructions:
 6. **Supply Chain Scanner** (`core/scanners/supply-chain/prompt.md`)
    - Always runs. Covers secrets, weak crypto, dependencies, CI/CD, key management.
 
-**Parallel execution**: If the agent platform supports it, run all 6 scanners in parallel for speed.
+7. **AI Security Scanner** (`core/scanners/ai-security/prompt.md`)
+   - Runs if AI/LLM usage is detected (OpenAI, Anthropic, LangChain, Spring AI, etc.). Covers prompt injection, output validation, agent security, model ops, API key exposure.
+
+**Parallel execution**: If the agent platform supports it, run all 7 scanners in parallel for speed.
 
 ### Step 3: Generate Report
 

@@ -165,3 +165,46 @@ Rules distilled from OWASP Cheat Sheet Series for detecting authentication, auth
   - Password reset endpoint without rate limiting
 - **Fix**: Implement progressive delays or account lockout. Add CAPTCHA after N failures.
 - **Reference**: Credential_Stuffing_Prevention_Cheat_Sheet.md
+
+## RULE-AUTH-014: Insecure Password Reset Token
+- **Severity**: HIGH
+- **CWE**: CWE-640 (Weak Password Recovery Mechanism for Forgotten Password)
+- **What to find**: Password reset tokens that are predictable, stored in plaintext, or lack expiry
+- **Patterns**:
+  - Reset token generated with weak RNG (`Math.random()`, `java.util.Random`, `UUID.randomUUID()` without hashing)
+  - Reset token stored in database without hashing
+  - Reset token compared via plaintext equality instead of constant-time comparison
+  - Missing token expiry: no `expiresAt`/`expiry`/`TTL` field on reset tokens
+  - Reset token longer than needed in URL (information leakage via Referer header)
+  - Password reset does not invalidate existing sessions
+- **Fix**: Generate tokens with CSPRNG. Hash before storage (SHA-256). Set short TTL (15-30 min). Invalidate all sessions on reset. Use constant-time comparison.
+- **Reference**: Forgot_Password_Cheat_Sheet.md
+
+## RULE-AUTH-015: Missing MFA on Sensitive Operations
+- **Severity**: MEDIUM
+- **CWE**: CWE-308 (Use of Single-factor Authentication)
+- **What to find**: Administrative, financial, or privilege-changing operations without MFA verification
+- **Patterns**:
+  - Admin endpoints (`/admin/*`, `@PreAuthorize("hasRole('ADMIN')")`) without MFA step
+  - Password change endpoint without reauthentication/MFA
+  - Email/phone change endpoint without MFA verification
+  - Financial transaction endpoints without step-up authentication
+  - Role/permission change endpoints without MFA
+  - API key generation/rotation without MFA
+- **Fix**: Require MFA or reauthentication for sensitive operations. Implement step-up authentication for elevated actions.
+- **Reference**: Multifactor_Authentication_Cheat_Sheet.md
+
+## RULE-AUTH-016: Sensitive Data in Log Output
+- **Severity**: HIGH
+- **CWE**: CWE-532 (Insertion of Sensitive Information into Log File)
+- **What to find**: Passwords, tokens, OTP codes, or API keys written to application logs
+- **Patterns**:
+  - `logger.*password`, `log.*password` (password in log call)
+  - `logger.*token`, `log.*token` (token in log call)
+  - `logger.*otp`, `log.*otp`, `logger.*one.time` (OTP in log)
+  - `logger.*secret`, `log.*apiKey`, `log.*api_key`
+  - `logger.*creditCard`, `log.*ssn`, `log.*socialSecurity`
+  - `toString()` on user/auth objects that include sensitive fields
+  - Catch blocks logging entire request objects containing credentials
+- **Fix**: Never log credentials, tokens, or PII. Use structured logging with redaction. Override `toString()` to exclude sensitive fields.
+- **Reference**: Logging_Cheat_Sheet.md, Logging_Vocabulary_Cheat_Sheet.md

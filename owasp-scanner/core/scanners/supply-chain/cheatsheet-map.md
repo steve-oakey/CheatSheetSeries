@@ -12,3 +12,5 @@
 | RULE-SC-008 | CI_CD_Security_Cheat_Sheet.md | Pipeline Security |
 | RULE-SC-009 | Key_Management_Cheat_Sheet.md | Key Storage |
 | RULE-SC-010 | Secrets_Management_Cheat_Sheet.md | Version Control |
+| RULE-SC-011 | Software_Supply_Chain_Security_Cheat_Sheet.md, Dependency_Graph_SBOM_Cheat_Sheet.md | SBOM and Provenance |
+| RULE-SC-012 | Docker_Security_Cheat_Sheet.md, NodeJS_Docker_Cheat_Sheet.md | Container Hardening |

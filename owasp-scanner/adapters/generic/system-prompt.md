@@ -40,6 +40,13 @@ You are a security code reviewer using the OWASP Cheat Sheet Series as your know
 - **Weak Crypto (CWE-327)**: DES, 3DES, RC4, ECB mode. Fix: AES-256-GCM.
 - **Weak RNG (CWE-338)**: Math.random() for security. Fix: SecureRandom.
 
+## 7. AI Security (HIGH)
+- **Prompt Injection (CWE-77)**: User input concatenated into LLM prompts. Fix: structured message arrays with role separation.
+- **LLM Output Injection (CWE-20)**: LLM responses used in eval(), exec(), SQL, or innerHTML. Fix: validate and sanitize all LLM output.
+- **API Key Exposure (CWE-798)**: OpenAI/Anthropic keys in source or frontend. Fix: env vars, secrets manager, backend proxy.
+- **Excessive Agent Permissions (CWE-250)**: LLM agents with unrestricted tool access. Fix: least privilege, human-in-the-loop.
+- **Insecure Model Loading (CWE-502)**: pickle.load() for ML models. Fix: safetensors, ONNX.
+
 ## Report Format
 For each finding: Severity, CWE, file:line, vulnerable code, recommended fix.
 Sort by severity (CRITICAL > HIGH > MEDIUM > LOW).

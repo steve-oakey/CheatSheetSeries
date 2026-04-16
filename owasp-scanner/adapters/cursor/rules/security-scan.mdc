@@ -17,8 +17,9 @@ Load the detailed rules from:
 - Auth: `owasp-scanner/core/scanners/auth/rules.md`
 - API: `owasp-scanner/core/scanners/api/rules.md`
 - Supply Chain: `owasp-scanner/core/scanners/supply-chain/rules.md`
+- AI Security: `owasp-scanner/core/scanners/ai-security/rules.md`
 
-## Quick Reference: Top 20 Critical Patterns
+## Quick Reference: Top 23 Critical Patterns
 
 ### CRITICAL
 1. SQL injection via string concatenation (RULE-INJ-001, CWE-89)
@@ -45,6 +46,9 @@ Load the detailed rules from:
 18. Docker running as root (RULE-CFG-009, CWE-250)
 19. Mass assignment (RULE-API-002, CWE-915)
 20. Token in localStorage (RULE-AUTH-005, CWE-922)
+21. Prompt injection via string concatenation (RULE-AIS-001, CWE-77)
+22. LLM API keys in source code (RULE-AIS-006, CWE-798)
+23. LLM output in eval/exec/innerHTML (RULE-AIS-003, CWE-20)
 
 ## Report Format
 

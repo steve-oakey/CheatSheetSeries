@@ -29,6 +29,9 @@ A fast triage scan focusing on the most critical and common vulnerabilities. Des
 18. **Docker Root**: No USER directive (RULE-CFG-009)
 19. **Mass Assignment**: Entity as @RequestBody (RULE-API-002)
 20. **Token in localStorage**: `localStorage.setItem("token")` (RULE-AUTH-005)
+21. **Prompt Injection**: User input concatenated into LLM prompts (RULE-AIS-001)
+22. **LLM API Keys Exposed**: OpenAI/Anthropic keys in source code (RULE-AIS-006)
+23. **LLM Output in eval()**: AI response passed to code execution (RULE-AIS-003)
 
 ## Instructions
 
