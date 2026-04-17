@@ -20,6 +20,6 @@
 | RULE-CFG-016 | Infrastructure_as_Code_Security_Cheat_Sheet.md | Security Defaults |
 | RULE-CFG-017 | TLS_Cipher_String_Cheat_Sheet.md, Transport_Layer_Security_Cheat_Sheet.md | Cipher Suite Selection |
 | RULE-CFG-018 | Access_Control_Cheat_Sheet.md | Enforcement |
-| RULE-CFG-016 | Infrastructure_as_Code_Security_Cheat_Sheet.md | Security Defaults |
-| RULE-CFG-017 | TLS_Cipher_String_Cheat_Sheet.md, Transport_Layer_Security_Cheat_Sheet.md | Cipher Suite Selection |
-| RULE-CFG-018 | Access_Control_Cheat_Sheet.md | Enforcement |
+
+## Supplementary Cheatsheets
+- **Nodejs_Security_Cheat_Sheet.md** -- Event loop blocking prevention (readFileSync in handlers), Node.js v20+ permission model (--permission, --allow-fs-read), toobusy-js overload detection

@@ -198,3 +198,30 @@ Rules distilled from OWASP Cheat Sheet Series for detecting injection vulnerabil
 - **Fix**: Use parameterized XPath queries or precompiled XPath expressions with variable binding
 - **PoC**: `curl "https://<target>/api/search?name=test' or '1'='1"` — if the response returns all XML nodes instead of a filtered subset, the XPath expression is injectable.
 - **Reference**: Injection_Prevention_Cheat_Sheet.md
+
+## RULE-INJ-016: Log Injection (CRLF)
+- **Severity**: MEDIUM
+- **CWE**: CWE-117 (Improper Output Neutralization for Logs)
+- **What to find**: Untrusted data concatenated into log statements, allowing attackers to inject newlines (CR/LF) to forge log entries or corrupt log integrity
+- **Patterns**:
+  - `logger.info("... " + userInput)` — string concatenation in log calls
+  - `logger.warn("... " + request.getParameter(...))` — request data concatenated into logs
+  - `logging.info(f"... {user_input}")` — Python f-string in log call
+  - `logger.info(`... ${req.body.name}`)` — Node.js template literal in log call
+  - Log message containing unvalidated CR (`\r`) or LF (`\n`) characters from user input
+- **Fix**: Use parameterized logging: `logger.warn("Failed login for user {}", username)`. Use structured logging (JSON format) with field-level encoding. Apply `maxStringLength` limits in log configuration.
+- **PoC**: `curl -X POST "https://<target>/api/login" -d 'username=admin%0d%0a[INFO] Login succeeded for admin'` — if the injected newline and fake log entry appear as a separate line in the application log file, the endpoint is vulnerable to log injection.
+- **Reference**: Java_Security_Cheat_Sheet.md#log-injection
+
+## RULE-INJ-017: Regular Expression Denial of Service (ReDoS)
+- **Severity**: MEDIUM
+- **CWE**: CWE-1333 (Inefficient Regular Expression Complexity)
+- **What to find**: Regex patterns with nested quantifiers that cause catastrophic backtracking when matched against crafted input
+- **Patterns**:
+  - Nested quantifiers: `(a+)+`, `(a|a)*`, `(.*)*`, `([a-zA-Z]+)*`
+  - Overlapping alternation with quantifiers: `(a|aa)+`, `(\d+|\d+\.)+`
+  - Complex backtracking: `^(([a-z])+.)+[A-Z]([a-z])+$`
+  - User-controlled regex: `new RegExp(req.body.pattern)`, `Pattern.compile(userInput)`, `re.compile(user_input)`
+- **Fix**: Use atomic groups or possessive quantifiers where available. Limit regex complexity. Use RE2 or safe-regex libraries. Never compile user input as regex without validation.
+- **PoC**: `curl "https://<target>/api/search?q=aaaaaaaaaaaaaaaaaaaaaaaaaaa!"` — if the response takes exponentially longer as the input length grows (e.g., 1s for 20 chars, 30s for 30 chars), the regex is vulnerable to catastrophic backtracking.
+- **Reference**: Nodejs_Security_Cheat_Sheet.md#stay-away-from-evil-regexes

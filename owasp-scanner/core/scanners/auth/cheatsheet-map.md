@@ -18,3 +18,6 @@
 | RULE-AUTH-014 | Forgot_Password_Cheat_Sheet.md | Token Generation and Storage |
 | RULE-AUTH-015 | Multifactor_Authentication_Cheat_Sheet.md | When to Require MFA |
 | RULE-AUTH-016 | Logging_Cheat_Sheet.md, Logging_Vocabulary_Cheat_Sheet.md | Sensitive Data in Logs |
+
+## Supplementary Cheatsheets
+- **Nodejs_Security_Cheat_Sheet.md** -- Brute-force protection packages: express-bouncer, express-brute, express-rate-limit, svg-captcha (referenced by RULE-AUTH-013)

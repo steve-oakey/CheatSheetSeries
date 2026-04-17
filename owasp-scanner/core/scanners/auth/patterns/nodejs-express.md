@@ -105,6 +105,9 @@ router\.post\(["']/forgot-password(?!.*rateLimit)        # Reset without rate li
 rateLimit\(.*windowMs.*max:\s*\d{1,2}\b.*login # Rate-limited login (good)
 app\.use\(["']/auth.*limiter\)           # Limiter on auth routes (good)
 express-brute|rate-limiter-flexible      # Rate limiting libraries (good)
+express-bouncer                          # IP-based brute-force prevention (good)
+express-rate-limit.*windowMs             # Express rate limiter config (good)
+svg-captcha|svgCaptcha\.create\(         # CAPTCHA on auth endpoints (good)
 ```
 
 ## CSRF Protection

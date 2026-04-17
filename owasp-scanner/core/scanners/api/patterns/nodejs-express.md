@@ -86,6 +86,9 @@ res\.json\(.*user\)(?!.*toJSON|.*select|.*project) # Full user object in respons
 \.find\(\)\.then\(.*res\.json\)          # All documents returned
 toObject\(\)(?!.*transform)              # Mongoose toObject without transform
 \.select\(["']-?__v["']\)               # Only excluding version field
+res\.json\(.*\).*password|res\.send\(.*password # Response containing password field
+res\.json\(.*\).*ssn|res\.json\(.*\).*creditCard # Response containing PII fields
+res\.json\(.*\).*token|res\.json\(.*\).*secret   # Response containing secrets
 ```
 
 ### Safe: Filtered responses
@@ -191,4 +194,31 @@ io\.on\(["']connection["'](?!.*auth|.*middleware) # Socket.io without auth
 io\.use\(.*authenticate|io\.use\(.*jwt   # Socket.io auth middleware (good)
 ws\.on\(["']message.*verify              # Message verification (good)
 socket\.handshake\.auth                  # Socket.io handshake auth (good)
+```
+
+## HTTP Parameter Pollution (RULE-API-014)
+
+### Dangerous: Missing HPP protection
+```
+req\.query\.\w+(?!.*typeof|.*Array\.isArray|.*parseInt|.*Number\() # Query param without type check
+req\.query\.\w+\s*===\s*["']            # String comparison without type guard
+app\.use\((?!.*hpp)                      # Express app without hpp middleware (review)
+```
+
+### HPP analysis guidance
+```
+# CRITICAL: Direct query param usage in auth/security context
+req\.query\.\w*(role|admin|user|auth|token|permission|level) # Security-sensitive param
+# Review: Query params used as filter/selector without validation
+req\.query\.\w+.*\.find\(|req\.query\.\w+.*\.where\( # Query param in DB query
+```
+
+### Safe: HPP prevention
+```
+app\.use\(hpp\(\)\)                      # HPP middleware applied (good)
+hpp\(\)                                  # HPP imported and used (good)
+typeof req\.query\.\w+\s*===\s*["']string # Type checking query param (good)
+Array\.isArray\(req\.query\.             # Array check on query param (good)
+joi\.string\(\)|zod\.string\(\)         # Schema validation on query params (good)
+ajv\.validate\(.*req\.query              # AJV schema validation (good)
 ```

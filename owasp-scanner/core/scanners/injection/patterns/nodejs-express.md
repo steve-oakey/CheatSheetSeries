@@ -180,3 +180,47 @@ xmldom.*evaluate\(.*\+                   # xmldom XPath with concat
 \.query\(["']CALL.*\?|\.query\(["']EXEC.*\? # Parameterized procedure (good)
 \.execute\(.*,\s*\[                      # Parameterized with array (good)
 ```
+
+## Log Injection (RULE-INJ-016)
+
+### Dangerous: String interpolation in log statements
+```
+logger\.\w+\(`.*\$\{.*req\.             # Logger with template literal + request data
+console\.log\(`.*\$\{.*req\.            # console.log with request data
+winston\.\w+\(`.*\$\{.*req\.            # Winston with template literal + request data
+pino\.\w+\(`.*\$\{.*req\.              # Pino with template literal + request data
+logger\.\w+\(.*\+.*req\.body            # Logger with concatenation + request body
+logger\.\w+\(.*\+.*req\.query           # Logger with concatenation + query params
+logger\.\w+\(.*\+.*req\.params          # Logger with concatenation + route params
+console\.log\(.*\+.*req\.               # console.log with request data concat
+```
+
+### Safe: Structured/parameterized logging
+```
+logger\.\w+\(\{.*req\.                  # Object-based structured logging (safe)
+logger\.\w+\(.*,\s*\{                   # Metadata object logging (safe)
+pino\(\).*\.child\(\{                   # Pino child logger with context (safe)
+winston\.createLogger.*format\.json     # Winston JSON format (safe)
+morgan\(.*stream                        # Morgan with file stream (safe)
+```
+
+## Regular Expression Denial of Service (RULE-INJ-017)
+
+### Dangerous: Vulnerable regex patterns in Node.js
+```
+new RegExp\(.*req\.|new RegExp\(.*user  # User-controlled regex
+new RegExp\(.*\$\{|new RegExp\(.*\+     # Dynamic regex construction
+/\(\w\+\)\+/|/\(\.\*\)\*/              # Nested quantifier literals
+/\(\[.*\]\+\)\+/                        # Nested quantifier on char class
+\.match\(.*req\.|\.replace\(.*req\.     # String methods with user-controlled regex
+\.search\(new RegExp\(.*req\.           # Search with user-controlled regex
+\.split\(new RegExp\(.*req\.            # Split with user-controlled regex
+```
+
+### Safe: ReDoS prevention in Node.js
+```
+safe-regex|safe-regex2                   # safe-regex library (good)
+re2                                      # RE2 binding (good, no backtracking)
+vuln-regex-detector                      # Regex vulnerability detector (good)
+validator\.isEmail|validator\.isURL      # Validator.js pre-built patterns (good)
+```

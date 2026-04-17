@@ -196,3 +196,45 @@ Schema\(\)\.load\(                      # Marshmallow validation (good)
 BaseModel                               # Pydantic model validation (good)
 Query\(.*ge=|Query\(.*le=               # FastAPI query validation (good)
 ```
+
+## Log Injection (RULE-INJ-016)
+
+### Dangerous: String formatting in log statements
+```
+logging\.\w+\(f".*\{.*request           # logging with f-string + request data
+logging\.\w+\(f".*\{.*user              # logging with f-string + user input
+logger\.\w+\(f".*\{.*request            # logger with f-string + request data
+logger\.\w+\(".*%s".*%.*request         # logger with %-format + request data
+logger\.\w+\(".*"\.format\(.*request    # logger with .format() + request data
+logger\.\w+\(".*"\s*\+\s*              # logger with string concatenation
+logging\.\w+\(".*"\s*\+\s*             # logging with string concatenation
+print\(.*request\.                      # print with request data (review)
+```
+
+### Safe: Parameterized/structured Python logging
+```
+logger\.\w+\(".*%s",\s*                # Lazy %-style logging (safe, deferred formatting)
+logger\.\w+\(".*%d",\s*                # Lazy %-style int logging (safe)
+structlog\.\w+\.\w+\(                  # structlog structured logging (safe)
+python-json-logger|pythonjsonlogger    # JSON structured logging (safe)
+extra=\{                                # Logging with extra dict (safe)
+```
+
+## Regular Expression Denial of Service (RULE-INJ-017)
+
+### Dangerous: Vulnerable regex patterns in Python
+```
+re\.compile\(.*request\.|re\.compile\(.*user_input  # User-controlled regex
+re\.compile\(.*\+|re\.compile\(.*f"     # Dynamic regex construction
+re\.\w+\(.*request\.\w+                 # re functions with request data as pattern
+re\.compile\(.*\(\w\+\)\+              # Nested quantifier: (a+)+
+re\.compile\(.*\(\.\*\)\*              # Nested quantifier: (.*)*
+re\.compile\(.*\(\[.*\]\+\)\+          # Nested quantifier on char class
+```
+
+### Safe: ReDoS prevention in Python
+```
+re2                                      # Google RE2 binding (safe, no backtracking)
+regex.*timeout=                          # regex module with timeout (partial)
+re\.compile\(.*,\s*re\..*TIMEOUT        # re with timeout flag (Python 3.x+)
+```

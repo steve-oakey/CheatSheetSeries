@@ -202,3 +202,33 @@ ValidationPipe\(\{.*whitelist:\s*true    # Whitelist enabled (good)
 ValidationPipe\(\{.*forbidNonWhitelisted # Non-whitelisted forbidden (good)
 ThrottlerGuard|@Throttle\(              # Rate limiting guard (good)
 ```
+
+## Event Loop Blocking (Nodejs_Security_Cheat_Sheet)
+
+### Dangerous: Synchronous operations in request handlers
+```
+readFileSync\(.*req\.|readFileSync\(.*request  # Sync file read in request handler
+writeFileSync\(.*req\.|writeFileSync\(.*request # Sync file write in request handler
+readdirSync\(.*req\.|mkdirSync\(.*req\.  # Sync directory ops in request handler
+appendFileSync\(|unlinkSync\(            # Sync filesystem ops (review if in handler)
+execSync\(|spawnSync\(                   # Sync child process in handler
+```
+
+### Event loop monitoring
+```
+# Absence of event loop monitoring is a finding in production Node.js apps
+toobusy-js|toobusy\(\)                  # Event loop overload detection (good)
+overload-protection                      # Overload protection middleware (good)
+res\.status\(503\).*toobusy|503.*overload # 503 on overload (good)
+```
+
+## Node.js Permission Model (Nodejs_Security_Cheat_Sheet)
+
+### Safe: Runtime permission restrictions (Node.js v20+)
+```
+--permission                             # Permission model flag (good)
+--allow-fs-read=                         # Restricted filesystem read (good)
+--allow-fs-write=                        # Restricted filesystem write (good)
+--allow-child-process                    # Explicit child process permission (good)
+--allow-worker                           # Explicit worker thread permission (good)
+```

@@ -60,6 +60,27 @@ new Yaml\(\)                            # Without SafeConstructor
 Kryo.*readClassAndObject\(
 ```
 
+### NoSQL Injection (Java MongoDB Driver)
+```
+BasicDBObject\(.*\+                     # BasicDBObject with string concat
+Document\.parse\(.*\+                   # Document.parse with string concat
+Document\.parse\(.*request\.getParameter # Document.parse with request data
+"\\$where".*\+|"\\$where".*request\.    # $where operator with user input
+"\\$regex".*\+|"\\$regex".*request\.    # $regex operator with user input
+Filters\.where\(.*\+                    # Filters.where with string concat
+BasicDBObject.*"\$\w+".*request\.       # MongoDB operator from user input
+MongoCollection.*find\(.*\+             # find with string concat
+```
+
+### Safe: MongoDB Java Driver (RULE-INJ-012)
+```
+Filters\.eq\(                           # Driver query builder (safe)
+Filters\.and\(|Filters\.or\(            # Logical filter builders (safe)
+Filters\.regex\(.*Pattern\.compile      # Programmatic regex (safe)
+new Document\("field",\s*value\)        # Document with literal field (safe)
+Bson.*filter                            # Bson filter type (safe)
+```
+
 ## Safe Alternatives (confirm these are used)
 
 ### Parameterized SQL
@@ -182,4 +203,65 @@ XPathConstants\.                        # Using typed return constants
 xpath\.evaluate\(.*XPathConstants       # Typed XPath evaluation
 StringEscapeUtils\.escapeXml            # XML escaping before XPath (partial)
 @XmlElement.*@Pattern                   # Schema + regex validation before XPath
+new QName\(.*\).*XPathVariableResolver  # QName-based variable binding (safe)
+```
+
+## Log Injection (RULE-INJ-016)
+
+### Dangerous: String concatenation in log statements
+```
+logger\.\w+\(".*"\s*\+\s*              # Logger call with string concatenation
+log\.\w+\(".*"\s*\+\s*                 # Log call with string concatenation
+LOG\.\w+\(".*"\s*\+\s*                 # LOG constant with string concatenation
+logger\.\w+\(.*\+.*request\.getParameter  # Logger with request parameter concat
+logger\.\w+\(.*\+.*req\.getParameter    # Logger with req parameter concat
+System\.out\.print.*\+.*request\.       # System.out with request data
+```
+
+### Log injection analysis guidance
+```
+# CRITICAL: User input directly concatenated into log message
+logger\.\w+\(".*"\s*\+\s*\w*(user|name|input|param|request|email|host|ip|path|url)
+# Review: Any non-parameterized log call in controller/filter
+logger\.\w+\(".*"\s*\+\s*              # in files matching *Controller*, *Filter*, *Interceptor*
+```
+
+### Safe: Parameterized logging
+```
+logger\.\w+\(".*\{\}",\s*              # SLF4J/Logback parameterized logging (safe)
+log\.\w+\(".*\{\}",\s*                 # Parameterized log call (safe)
+LOG\.\w+\(".*\{\}",\s*                 # Parameterized LOG call (safe)
+JsonTemplateLayout                      # Log4j2 JSON structured layout (safe)
+JsonEncoder                             # Logback JSON encoder (safe)
+StructuredArgument|StructuredArguments  # Logstash Logback structured args (safe)
+maxStringLength="\d+"                   # Log4j2 string length limit (safe)
+KeyValuePair                            # Log4j2 key-value logging (safe)
+```
+
+## Regular Expression Denial of Service (RULE-INJ-017)
+
+### Dangerous: Vulnerable regex patterns in Java
+```
+Pattern\.compile\(.*\(\w\+\)\+          # Nested quantifier: (a+)+
+Pattern\.compile\(.*\(\.\*\)\*          # Nested quantifier: (.*)*
+Pattern\.compile\(.*\(\w\|\w\)\*        # Overlapping alternation: (a|a)*
+Pattern\.compile\(.*\(\[.*\]\+\)\+     # Nested quantifier on char class
+Pattern\.compile\(.*request\.getParameter # User-controlled regex
+Pattern\.compile\(.*req\.getParameter   # User-controlled regex
+```
+
+### ReDoS analysis guidance
+```
+# Review any Pattern.compile with user input or complex nested quantifiers
+Pattern\.compile\(.*\+                  # Dynamic regex with string concat
+new Regex\(.*\+                         # Dynamic regex construction
+\.matches\(.*\+.*,                      # String.matches with dynamic pattern
+\.split\(.*request\.|\.split\(.*req\.   # Split with user-controlled pattern
+\.replaceAll\(.*request\.               # replaceAll with user-controlled regex
+```
+
+### Safe: ReDoS prevention in Java
+```
+Pattern\.compile\(.*,\s*Pattern\..*TIMEOUT  # Pattern with timeout (partial)
+com\.google\.re2j\.Pattern              # RE2 library (safe, no backtracking)
 ```

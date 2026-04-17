@@ -14,3 +14,9 @@
 | RULE-SC-010 | Secrets_Management_Cheat_Sheet.md | Version Control |
 | RULE-SC-011 | Software_Supply_Chain_Security_Cheat_Sheet.md, Dependency_Graph_SBOM_Cheat_Sheet.md | SBOM and Provenance |
 | RULE-SC-012 | Docker_Security_Cheat_Sheet.md, NodeJS_Docker_Cheat_Sheet.md | Container Hardening |
+
+## Supplementary Cheatsheets
+
+These cheatsheets provide additional context but are not primary rule sources:
+- **Java_Security_Cheat_Sheet.md** -- Java cryptography best practices: Google Tink, JCA/JCE AES-GCM, ECDH key agreement, nonce management (referenced by RULE-SC-003, RULE-SC-004)
+- **Nodejs_Security_Cheat_Sheet.md** -- Deprecated package detection: csurf (known bypass vulnerabilities), safe alternatives: csrf-csrf, csrf-sync, lusca

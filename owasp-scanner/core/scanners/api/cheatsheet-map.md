@@ -15,6 +15,7 @@
 | RULE-API-011 | REST_Security_Cheat_Sheet.md | API Key Management |
 | RULE-API-012 | REST_Security_Cheat_Sheet.md | Content-Type Validation |
 | RULE-API-013 | Microservices_Security_Cheat_Sheet.md | Service Communication |
+| RULE-API-014 | Nodejs_Security_Cheat_Sheet.md | Prevent HTTP Parameter Pollution |
 
 ## Supplementary Cheatsheets
 - **REST_Assessment_Cheat_Sheet.md** -- Testing guidance for REST APIs
@@ -22,3 +23,4 @@
 - **gRPC_Security_Cheat_Sheet.md** -- gRPC-specific security patterns
 - **Pinning_Cheat_Sheet.md** -- Certificate pinning for mobile/API clients
 - **Multi_Tenant_Security_Cheat_Sheet.md** -- Tenant isolation patterns
+- **Nodejs_Security_Cheat_Sheet.md** -- API response data minimization, sensitive field filtering (referenced by RULE-API-014)

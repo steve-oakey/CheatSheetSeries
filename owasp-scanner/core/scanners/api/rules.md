@@ -170,3 +170,29 @@ Rules distilled from OWASP Cheat Sheet Series for detecting REST, GraphQL, WebSo
 - **Fix**: Use mTLS for service-to-service communication. Use short-lived JWT tokens. Implement network policies.
 - **PoC**: `grep -rnE 'http://' --include="*.java" --include="*.py" --include="*.yaml" . | grep -vE '(localhost|127\.0\.0\.1|example\.com|test)'` — matches with internal service hostnames confirm plaintext HTTP for inter-service calls. Also: `curl -v http://<internal-service>:8080/actuator/health` from within the cluster to verify no TLS is required.
 - **Reference**: Microservices_Security_Cheat_Sheet.md
+
+## RULE-API-014: HTTP Parameter Pollution
+- **Severity**: MEDIUM
+- **CWE**: CWE-235 (Improper Handling of Extra Parameters)
+- **What to find**: Express/Node.js endpoints that accept query parameters without type checking, allowing duplicate parameters to be interpreted as arrays or objects
+- **Patterns**:
+  - `req.query.param` used directly without type validation (may be string, array, or object)
+  - Missing `hpp()` middleware in Express application setup
+  - No schema validation (joi, ajv, zod) on query parameters before use
+  - Sails/Feathers auto-generated REST endpoints without parameter validation
+- **Fix**: Use `hpp` middleware (`app.use(hpp())`). Validate and type-check all query parameters. Use schema validation libraries.
+- **PoC**: `curl "https://<target>/api/search?role=user&role=admin"` — if the server processes the second `role=admin` value (or both as an array) instead of rejecting the duplicate, the endpoint is vulnerable to HTTP parameter pollution. Check if `req.query.role` returns `['user', 'admin']` instead of `'user'`.
+- **Reference**: Nodejs_Security_Cheat_Sheet.md#prevent-http-parameter-pollution
+
+## RULE-API-014: HTTP Parameter Pollution
+- **Severity**: MEDIUM
+- **CWE**: CWE-235 (Improper Handling of Extra Parameters)
+- **What to find**: Express/Node.js endpoints that accept query parameters without type checking, allowing duplicate parameters to be interpreted as arrays or objects
+- **Patterns**:
+  - `req.query.param` used directly without type validation (may be string, array, or object)
+  - Missing `hpp()` middleware in Express application setup
+  - No schema validation (joi, ajv, zod) on query parameters before use
+  - Sails/Feathers auto-generated REST endpoints without parameter validation
+- **Fix**: Use `hpp` middleware (`app.use(hpp())`). Validate and type-check all query parameters. Use schema validation libraries.
+- **PoC**: `curl "https://<target>/api/search?role=user&role=admin"` — if the server processes the second `role=admin` value (or both as an array) instead of rejecting the duplicate, the endpoint is vulnerable to HTTP parameter pollution. Check if `req.query.role` returns `['user', 'admin']` instead of `'user'`.
+- **Reference**: Nodejs_Security_Cheat_Sheet.md#prevent-http-parameter-pollution

@@ -38,6 +38,34 @@ KeyGenerator\.getInstance\("AES"          # Proper key generation
 KeyPairGenerator\.getInstance\("RSA"      # RSA key generation
 ```
 
+## Google Tink / JCA Best Practices
+```
+# Safe: Google Tink APIs (recommended by Java_Security_Cheat_Sheet)
+com\.google\.crypto\.tink               # Tink library import (safe)
+KeysetHandle\.generateNew\(             # Tink key generation (safe)
+Aead\.encrypt\(|Aead\.decrypt\(         # Tink authenticated encryption (safe)
+HybridEncrypt\.encrypt\(                # Tink hybrid encryption (safe)
+HybridDecrypt\.decrypt\(                # Tink hybrid decryption (safe)
+DeterministicAead                       # Tink deterministic encryption (safe)
+AeadConfig\.register\(\)               # Tink config registration (safe)
+
+# Safe: JCA with proper mode/nonce
+Cipher\.getInstance\("AES/GCM/NoPadding" # AES-GCM authenticated encryption (safe)
+GCMParameterSpec\(128,                  # 128-bit auth tag for GCM (safe)
+SecureRandom\(\)\.nextBytes\(.*12\)     # 96-bit (12-byte) nonce for GCM (safe)
+KeyAgreement\.getInstance\("ECDH"       # ECDH key agreement (safe)
+```
+
+### Dangerous: Common JCA misconfigurations
+```
+Cipher\.getInstance\("AES/ECB           # ECB mode (no IV, pattern leakage)
+Cipher\.getInstance\("AES"\)            # Default mode — ECB on some JVMs!
+Cipher\.getInstance\("AES/CBC/PKCS5"    # CBC without HMAC (padding oracle risk)
+new SecretKeySpec\(.*\.getBytes\("UTF   # Deriving key from string (no KDF)
+new IvParameterSpec\(new byte\[16\]\)   # All-zero IV (unsafe)
+cipher\.init\(.*new SecretKeySpec\(.*"  # Hardcoded key in init
+```
+
 ## Weak RNG
 ```
 new Random\(\)(?!.*Secure)              # java.util.Random (not crypto)

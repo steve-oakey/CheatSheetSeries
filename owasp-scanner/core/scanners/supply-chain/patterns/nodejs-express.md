@@ -171,6 +171,21 @@ require\(["']\w+                         # Static require (good)
 import \w+ from ["']                     # Static import (good)
 ```
 
+## Deprecated/Vulnerable Packages (Nodejs_Security_Cheat_Sheet)
+
+### Dangerous: Known deprecated packages with security issues
+```
+require\(["']csurf["']\)                 # csurf is deprecated (known bypass vulnerabilities)
+import.*from\s*["']csurf["']            # csurf ESM import (deprecated)
+"csurf":\s*"                             # csurf in package.json (deprecated)
+```
+
+### Safe: CSRF alternatives
+```
+csrf-csrf|csrf-sync                      # Modern CSRF libraries (good)
+lusca\.csrf\(                            # Lusca CSRF middleware (good)
+```
+
 ## .npmrc Security
 
 ### Dangerous: Insecure .npmrc
