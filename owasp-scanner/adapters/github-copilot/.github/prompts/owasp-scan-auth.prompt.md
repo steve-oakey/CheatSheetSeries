@@ -31,3 +31,4 @@ Scan the current project for authentication, authorization, and session manageme
 - RULE-AUTH-010 through AUTH-016: Session config, rate limiting, MFA bypass, privilege escalation
 
 Present findings sorted by severity with code snippets and fixes.
+For CRITICAL and HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rules.

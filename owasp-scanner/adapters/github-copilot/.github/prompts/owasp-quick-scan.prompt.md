@@ -42,5 +42,6 @@ A fast triage scan focusing on the most critical and common vulnerabilities. Che
 
 1. Search for the patterns above across the entire project
 2. Report any matches using the format in `owasp-scanner/core/reporting/format.md`
-3. Include a summary count by severity
-4. Recommend running the full scan prompt (`owasp-scan-all`) for comprehensive coverage
+3. For CRITICAL and HIGH findings, include a non-destructive proof of concept (curl, grep, or short script) adapted from the PoC templates in the rule definitions
+4. Include a summary count by severity
+5. Recommend running the full scan prompt (`owasp-scan-all`) for comprehensive coverage

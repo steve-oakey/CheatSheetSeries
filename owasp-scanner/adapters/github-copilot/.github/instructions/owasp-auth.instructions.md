@@ -58,6 +58,10 @@ When reviewing or generating authentication-related code, watch for these vulner
 - Different HTTP status codes for user-exists vs user-not-found
 - **Fix**: Use identical generic messages: `"Invalid username or password"`
 
+## Proof of Concept
+
+For CRITICAL and HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rule definitions. Use benign payloads that prove the vulnerability exists without causing damage.
+
 ## For Comprehensive Scanning
 
 Read the full rule set at `owasp-scanner/core/scanners/auth/rules.md` and language-specific patterns in `owasp-scanner/core/scanners/auth/patterns/`.

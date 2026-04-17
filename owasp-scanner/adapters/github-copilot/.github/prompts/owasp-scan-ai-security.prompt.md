@@ -32,3 +32,4 @@ Scan the current project for security vulnerabilities in AI/LLM-powered applicat
 - RULE-AIS-010 through AIS-013: Missing logging, model poisoning, function calling abuse
 
 Present findings sorted by severity with code snippets and fixes.
+For HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rules.

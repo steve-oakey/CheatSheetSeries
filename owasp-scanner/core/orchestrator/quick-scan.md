@@ -37,5 +37,6 @@ A fast triage scan focusing on the most critical and common vulnerabilities. Des
 
 1. Search for the patterns above across the entire project
 2. Report any matches using `core/reporting/format.md`
-3. Include a summary count by severity
-4. Recommend running a full scan (`full-scan.md`) for comprehensive coverage
+3. For CRITICAL and HIGH findings, include a non-destructive proof of concept (curl, grep, or short script) adapted from the PoC templates in the rule definitions
+4. Include a summary count by severity
+5. Recommend running a full scan (`full-scan.md`) for comprehensive coverage

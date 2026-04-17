@@ -30,3 +30,4 @@ Scan the current project for cross-site scripting vulnerabilities.
 - RULE-XSS-014/015/016: postMessage, Web Workers, DOMParser issues
 
 Present findings sorted by severity with code snippets and fixes.
+For CRITICAL and HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rules.

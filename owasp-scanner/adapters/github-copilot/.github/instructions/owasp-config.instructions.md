@@ -61,6 +61,10 @@ Check for absence of:
 - `server.error.include-stacktrace=always` (Spring Boot)
 - **Fix**: Ensure debug mode is disabled in production configs
 
+## Proof of Concept
+
+For HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rule definitions. Use benign payloads that prove the vulnerability exists without causing damage.
+
 ## For Comprehensive Scanning
 
 Read the full rule set at `owasp-scanner/core/scanners/config/rules.md` and language-specific patterns in `owasp-scanner/core/scanners/config/patterns/`.

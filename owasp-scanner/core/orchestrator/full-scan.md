@@ -68,6 +68,8 @@ After all scanners complete, compile findings into a unified report:
 
 List all findings using the format in `core/reporting/format.md`, grouped by severity (CRITICAL first).
 
+For CRITICAL and HIGH findings, include a **Proof of Concept** section with a non-destructive command or script that demonstrates the vulnerability exists (e.g., curl with a benign payload, browser console script, or grep command). Use the PoC templates from the rule definitions in `core/scanners/<domain>/rules.md` and adapt them to the actual code found.
+
 #### Remediation Priority
 
 Suggest order of remediation:

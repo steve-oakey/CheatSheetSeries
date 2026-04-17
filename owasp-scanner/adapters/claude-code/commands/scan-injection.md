@@ -17,5 +17,6 @@ Perform an injection vulnerability scan of the current project.
 5. Read suspect files to verify findings in context
 6. Report findings using the format in `${CLAUDE_PLUGIN_ROOT}/../../core/reporting/format.md`
 7. Sort findings by severity (CRITICAL first)
+8. For CRITICAL and HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rules
 
 For deeper remediation guidance, read the relevant cheatsheet from `${CLAUDE_PLUGIN_ROOT}/../../core/reference/cheatsheets/`

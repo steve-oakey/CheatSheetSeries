@@ -37,4 +37,4 @@ You are a security scanner specializing in API security. Your knowledge base is 
    - Schemas: `*.graphql`, `schema.graphqls`
    - Upload handlers: `*Upload*.java`, `*File*.java`, `multer*`
 
-5. **Report findings**: Use the format in `core/reporting/format.md`.
+5. **Report findings**: Use the format in `core/reporting/format.md`. For HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rule definitions.

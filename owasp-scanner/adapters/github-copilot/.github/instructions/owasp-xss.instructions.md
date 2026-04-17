@@ -59,6 +59,10 @@ When reviewing or generating code in these files, watch for cross-site scripting
 - `JSON.parse(untrusted)` spread into objects without `__proto__` filtering
 - **Fix**: Freeze prototypes, validate keys, filter `__proto__` / `constructor` / `prototype`
 
+## Proof of Concept
+
+For CRITICAL and HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rule definitions. Use benign payloads that prove the vulnerability exists without causing damage.
+
 ## For Comprehensive Scanning
 
 Read the full rule set at `owasp-scanner/core/scanners/xss/rules.md` and language-specific patterns in `owasp-scanner/core/scanners/xss/patterns/`.

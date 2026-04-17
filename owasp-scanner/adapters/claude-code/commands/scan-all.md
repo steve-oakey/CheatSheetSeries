@@ -17,6 +17,7 @@ Perform a full OWASP security scan of the current project.
 3. Dispatch up to 7 scanner sub-agents in parallel (injection, xss, config, auth, api, supply-chain, ai-security)
 4. Each sub-agent should read its `rules.md` and appropriate `patterns/*.md` from the core scanners directory
 5. Compile all findings into a unified report using `${CLAUDE_PLUGIN_ROOT}/../../core/reporting/report-template.md`
+6. For CRITICAL and HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in each scanner's rules
 
 The user may provide optional arguments:
 - `--focus <domain>` to run only one scanner

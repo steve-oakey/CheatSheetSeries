@@ -13,6 +13,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting cross-site scripting
   - `$(...).html(userInput)` (jQuery)
   - `$(...).append(unsanitizedHTML)` (jQuery)
 - **Fix**: Use `element.textContent` for text display, or `DOMPurify.sanitize(input)` before innerHTML assignment
+- **PoC**: In the browser console on the affected page: `document.querySelector('[user-input-field]').value = '<img src=x onerror=alert(document.domain)>'; document.querySelector('form').submit();` — if an alert box shows the domain name, the innerHTML sink renders unsanitized input.
 - **Reference**: Cross_Site_Scripting_Prevention_Cheat_Sheet.md#safe-sinks
 
 ## RULE-XSS-002: document.write / document.writeln
@@ -23,6 +24,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting cross-site scripting
   - `document.write(` with variable input
   - `document.writeln(` with variable input
 - **Fix**: Use DOM manipulation methods (`createElement`, `appendChild`, `textContent`)
+- **PoC**: `curl -s "https://<target>/page?q=<img+src%3Dx+onerror%3Dalert(1)>" | grep -i 'onerror'` — if the response body contains the unescaped `onerror` attribute, the input reaches a `document.write()` sink.
 - **Reference**: DOM_based_XSS_Prevention_Cheat_Sheet.md
 
 ## RULE-XSS-003: Dangerous JavaScript Evaluation
@@ -36,6 +38,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting cross-site scripting
   - `setInterval(stringArgument, delay)` (string, not function reference)
   - `window.execScript(`
 - **Fix**: Use `JSON.parse()` for JSON data. Replace string arguments in setTimeout/setInterval with function references
+- **PoC**: `curl "https://<target>/api/callback?fn=alert(document.domain)"` — if the server embeds the parameter into a `setTimeout()` or `eval()` call in the response, the payload will execute in the browser.
 - **Reference**: DOM_based_XSS_Prevention_Cheat_Sheet.md
 
 ## RULE-XSS-004: Framework Escape Hatch - React
@@ -46,6 +49,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting cross-site scripting
   - `dangerouslySetInnerHTML` without `DOMPurify.sanitize()`
   - `dangerouslySetInnerHTML={{__html: userInput}}`
 - **Fix**: Sanitize with DOMPurify before passing: `dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(input)}}`
+- **PoC**: In React DevTools or via API: submit `<svg onload=alert(document.domain)>` as the field rendered by `dangerouslySetInnerHTML`. If an alert fires when the component renders, the input is not sanitized.
 - **Reference**: Cross_Site_Scripting_Prevention_Cheat_Sheet.md#framework-security
 
 ## RULE-XSS-005: Framework Escape Hatch - Angular
@@ -61,6 +65,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting cross-site scripting
   - `[innerHTML]` binding with unsanitized dynamic data
   - `ElementRef.nativeElement` direct DOM manipulation
 - **Fix**: Avoid bypass functions. If necessary, validate/sanitize input before bypassing. Use Angular's built-in template binding.
+- **PoC**: `grep -rn "bypassSecurityTrust" --include="*.ts" .` — any match confirms Angular's sanitizer is bypassed. Submit `<img src=x onerror=alert(document.domain)>` to the bound input field and check if the alert fires in the browser.
 - **Reference**: Cross_Site_Scripting_Prevention_Cheat_Sheet.md#framework-security
 
 ## RULE-XSS-006: Framework Escape Hatch - Other
@@ -74,6 +79,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting cross-site scripting
   - Svelte: `{@html userInput}`
   - EJS/Pug/Handlebars: `<%- unescaped %>`, `!{unescaped}`, `{{{unescaped}}}`
 - **Fix**: Use the framework's default escaped output. Sanitize with DOMPurify if raw HTML is required.
+- **PoC**: Submit `<img src=x onerror=alert(document.domain)>` into a field rendered by the escape-hatch directive (`v-html`, `{@html}`, `{{{}}}`). If the alert fires in the browser, the framework's auto-escaping is bypassed.
 - **Reference**: Cross_Site_Scripting_Prevention_Cheat_Sheet.md#framework-security
 
 ## RULE-XSS-007: Unsafe Event Handler Assignment
@@ -87,6 +93,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting cross-site scripting
   - `element.setAttribute("onerror", userInput)`
   - Any `on*` attribute with dynamic content in HTML templates
 - **Fix**: Use `addEventListener()` with function references, not string code
+- **PoC**: `curl -s "https://<target>/page?callback=alert(document.domain)" | grep -iE 'on(click|error|load)\s*='` — if the response contains user input embedded inside an event handler attribute, the payload will execute on user interaction.
 - **Reference**: DOM_based_XSS_Prevention_Cheat_Sheet.md
 
 ## RULE-XSS-008: JavaScript URL Protocol
@@ -101,6 +108,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting cross-site scripting
   - `<a href="{{userInput}}">`
   - `<iframe src="{{userInput}}">`
 - **Fix**: Validate URL starts with `https://` or `http://` only. Reject `javascript:`, `data:`, `vbscript:` protocols
+- **PoC**: `curl -s "https://<target>/redirect?url=javascript:alert(document.domain)" -o /dev/null -D -` — if the server redirects or renders the `javascript:` URL into an `href` attribute, clicking the link executes JavaScript.
 - **Reference**: Cross_Site_Scripting_Prevention_Cheat_Sheet.md#url-contexts
 
 ## RULE-XSS-009: Unsafe CSP Configuration
@@ -153,6 +161,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting cross-site scripting
   - `Object.assign()` with user-controlled source objects
   - `lodash.merge()` / `lodash.defaultsDeep()` (older versions)
 - **Fix**: Use `Object.create(null)` for dictionaries, `Map`/`Set` for key-value stores, validate keys against `__proto__` and `constructor`
+- **PoC**: `curl -X POST "https://<target>/api/settings" -H "Content-Type: application/json" -d '{"__proto__":{"polluted":true}}'` then `curl "https://<target>/api/debug"` — if any object in the response contains `"polluted":true`, the prototype chain was modified by user input.
 - **Reference**: Prototype_Pollution_Prevention_Cheat_Sheet.md
 
 ## RULE-XSS-013: Unsafe postMessage Handling
@@ -164,6 +173,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting cross-site scripting
   - `addEventListener("message", handler)` without `event.origin` check
   - `event.data` used in `innerHTML`, `eval()`, or `document.write()`
 - **Fix**: Always specify exact target origin. Always validate `event.origin` in handlers. Use `textContent` for display.
+- **PoC**: Create a test HTML page: `<script>window.open('https://<target>'); setTimeout(()=>window.opener.postMessage('test','*'),2000);</script>` — if the target page processes the message without checking `event.origin`, the handler accepts cross-origin messages.
 - **Reference**: HTML5_Security_Cheat_Sheet.md
 
 ## RULE-XSS-014: localStorage/sessionStorage for Sensitive Data
@@ -197,4 +207,5 @@ Rules distilled from OWASP Cheat Sheet Series for detecting cross-site scripting
   - `element.insertAdjacentHTML("beforeend", userInput)`
   - `element.insertAdjacentHTML("afterbegin", apiResponse)`
 - **Fix**: Use `insertAdjacentText()` for text content, or sanitize with DOMPurify before using `insertAdjacentHTML`
+- **PoC**: Submit `<img src=x onerror=alert(document.domain)>` as data that reaches an `insertAdjacentHTML` call. If the alert fires when the page renders, the input is inserted as unsanitized HTML.
 - **Reference**: DOM_based_XSS_Prevention_Cheat_Sheet.md

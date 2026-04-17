@@ -56,6 +56,10 @@ When reviewing or generating dependency, CI/CD, or configuration files, watch fo
 - Missing lockfiles (`package-lock.json`, `yarn.lock`)
 - **Fix**: Add OWASP Dependency-Check. Enable Dependabot. Run `npm audit` in CI.
 
+## Proof of Concept
+
+For CRITICAL and HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rule definitions. Use benign payloads that prove the vulnerability exists without causing damage.
+
 ## For Comprehensive Scanning
 
 Read the full rule set at `owasp-scanner/core/scanners/supply-chain/rules.md` and language-specific patterns in `owasp-scanner/core/scanners/supply-chain/patterns/`.

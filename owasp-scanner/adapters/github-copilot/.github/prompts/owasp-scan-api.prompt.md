@@ -31,3 +31,4 @@ Scan the current project for REST, GraphQL, WebSocket, and general API vulnerabi
 - RULE-API-010 through API-013: Rate limiting, API versioning, HATEOAS abuse, batch endpoint issues
 
 Present findings sorted by severity with code snippets and fixes.
+For HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rules.

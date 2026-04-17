@@ -15,3 +15,4 @@ Perform an API security scan of the current project.
 3. Load the appropriate patterns file from `${CLAUDE_PLUGIN_ROOT}/../../core/scanners/api/patterns/`
 4. Search for SSRF, mass assignment, file upload issues, unvalidated redirects, GraphQL/WebSocket misconfigurations
 5. Report findings using the format in `${CLAUDE_PLUGIN_ROOT}/../../core/reporting/format.md`
+6. For HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rules

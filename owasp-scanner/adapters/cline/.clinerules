@@ -24,3 +24,4 @@ When asked to scan for security issues, load detailed rules from `owasp-scanner/
 10. Math.random() for security -> use SecureRandom (CWE-338)
 
 Report findings as: Rule ID, severity, CWE, file:line, code, fix.
+For CRITICAL and HIGH findings: include a non-destructive proof of concept (curl command, browser console script, or short code snippet) that proves the vulnerability exists. Target non-production environments only.

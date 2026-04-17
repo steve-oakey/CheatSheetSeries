@@ -53,3 +53,4 @@ Load the detailed rules from:
 ## Report Format
 
 For each finding: Rule ID, severity, CWE, file:line, code snippet, recommended fix.
+For CRITICAL and HIGH findings: include a non-destructive proof of concept (curl command, browser console script, or short code snippet) that proves the vulnerability exists without causing damage. Target non-production environments only.

@@ -91,6 +91,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting security misconfigur
   - `ssl_protocols` including anything below TLSv1.2
   - Missing forward secrecy ciphers (no ECDHE/DHE)
 - **Fix**: Enable only TLS 1.2+ with strong cipher suites. Prefer TLS 1.3.
+- **PoC**: `openssl s_client -connect <target>:443 -tls1 </dev/null 2>&1 | grep -i 'protocol\|cipher'` — if the connection succeeds with TLS 1.0 or TLS 1.1, the server accepts deprecated protocols. Also try: `nmap --script ssl-enum-ciphers -p 443 <target>` to list all accepted cipher suites.
 - **Reference**: Transport_Layer_Security_Cheat_Sheet.md
 
 ## RULE-CFG-008: Clickjacking Vulnerability
@@ -144,6 +145,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting security misconfigur
   - Missing `drop: ["ALL"]` in capabilities
   - `hostNetwork: true`, `hostPID: true`, `hostIPC: true`
 - **Fix**: Set restrictive securityContext: runAsNonRoot, drop ALL caps, readOnlyRootFilesystem
+- **PoC**: `kubectl get pods -o json | python3 -c "import sys,json;d=json.load(sys.stdin);[print(f\"Pod {p['metadata']['name']}: privileged={c.get('securityContext',{}).get('privileged','not set')}\") for p in d['items'] for c in p['spec']['containers']]"` — any pod showing `privileged=True` or `privileged=not set` confirms insufficient container security restrictions.
 - **Reference**: Kubernetes_Security_Cheat_Sheet.md
 
 ## RULE-CFG-012: Missing Network Policy
@@ -248,6 +250,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting security misconfigur
   - Missing encryption at rest: `encrypted = false`, no `kms_key_id`
   - Missing logging/monitoring: no CloudTrail, no flow logs
 - **Fix**: Apply least privilege. Encrypt data at rest and in transit. Restrict network access. Enable logging.
+- **PoC**: `grep -rnE '(0\.0\.0\.0/0|public-read|publicly_accessible\s*=\s*true|"Action"\s*:\s*"\*")' --include="*.tf" --include="*.yaml" --include="*.json" .` — any match confirms an overly permissive IaC configuration (open security group, public S3 bucket, public database, or wildcard IAM policy).
 - **Reference**: Infrastructure_as_Code_Security_Cheat_Sheet.md
 
 ## RULE-CFG-017: Weak TLS Cipher Suites
@@ -261,6 +264,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting security misconfigur
   - Cipher order not enforced server-side (`ssl_prefer_server_ciphers off`)
   - RSA key exchange without PFS (e.g., `TLS_RSA_WITH_AES_*`)
 - **Fix**: Use only TLS 1.2+ with AEAD cipher suites (GCM/ChaCha20). Enforce server cipher order. Prefer ECDHE key exchange.
+- **PoC**: `openssl s_client -connect <target>:443 -cipher 'DES-CBC3-SHA' </dev/null 2>&1 | grep -i 'cipher'` — if the connection succeeds, the server accepts the weak 3DES cipher. Repeat with `RC4-SHA`, `NULL-SHA` to test other weak ciphers.
 - **Reference**: TLS_Cipher_String_Cheat_Sheet.md, Transport_Layer_Security_Cheat_Sheet.md
 
 ## RULE-CFG-018: Access Control Gaps

@@ -13,6 +13,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting authentication, auth
   - bcrypt with work factor < 10
   - PBKDF2 with < 600,000 iterations (HMAC-SHA256) or < 1,400,000 (HMAC-SHA1)
 - **Fix**: Use Argon2id (m=19456, t=2, p=1), scrypt (N=2^17, r=8, p=1), or bcrypt (work factor >= 10)
+- **PoC**: `grep -rn 'MD5\|SHA-1\|MessageDigest.getInstance' --include="*.java" . | grep -i password` — any match near password handling confirms weak hashing. Alternatively: `python3 -c "import hashlib,time;s=time.time();hashlib.md5(b'test').hexdigest();print(f'MD5: {time.time()-s:.6f}s')"` shows MD5 completes in microseconds, making brute force feasible.
 - **Reference**: Password_Storage_Cheat_Sheet.md
 
 ## RULE-AUTH-002: Hardcoded Credentials
@@ -27,6 +28,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting authentication, auth
   - `Authorization: Bearer <literal_token>`
   - `jdbc:.*password=<literal>` in connection strings
 - **Fix**: Use environment variables, vault services, or externalized configuration
+- **PoC**: `grep -rnE '(password|apiKey|secret|token)\s*=\s*"[^"]+"' --include="*.java" --include="*.py" --include="*.js" .` — any match with a literal string value (not a variable reference) confirms hardcoded credentials. Redact the actual values when reporting.
 - **Reference**: Secrets_Management_Cheat_Sheet.md
 
 ## RULE-AUTH-003: JWT Algorithm None
@@ -39,6 +41,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting authentication, auth
   - JWT verification without explicit algorithm specification
   - `setAllowedClockSkew` with large values
 - **Fix**: Always specify algorithm explicitly: `Algorithm.HMAC256(secret)`. Never accept `none`.
+- **PoC**: `python3 -c "import base64,json;h=base64.urlsafe_b64encode(json.dumps({'alg':'none','typ':'JWT'}).encode()).rstrip(b'=');p=base64.urlsafe_b64encode(json.dumps({'sub':'admin','role':'admin'}).encode()).rstrip(b'=');print(f'{h.decode()}.{p.decode()}.')"` — send the resulting token as `Authorization: Bearer <token>`. If the server accepts it, the JWT `none` algorithm is permitted.
 - **Reference**: JSON_Web_Token_for_Java_Cheat_Sheet.md
 
 ## RULE-AUTH-004: JWT Missing Validation Claims
@@ -52,6 +55,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting authentication, auth
   - Missing `withExpiresAt()` or no expiration check
   - Weak HMAC secret (< 64 characters)
 - **Fix**: Validate issuer, audience, expiration, and not-before claims. Use 64+ char secrets for HMAC.
+- **PoC**: Decode an existing token at `jwt.io` and check for missing `iss`, `aud`, or `exp` claims. Create a token with an expired `exp` value and send it: `curl -H "Authorization: Bearer <expired-token>" https://<target>/api/protected` — if the request succeeds, expiration is not validated.
 - **Reference**: JSON_Web_Token_for_Java_Cheat_Sheet.md
 
 ## RULE-AUTH-005: Session Token in localStorage
@@ -64,6 +68,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting authentication, auth
   - `sessionStorage.setItem("token", ...)`
   - Token retrieval: `localStorage.getItem("token")`
 - **Fix**: Store tokens in httpOnly cookies (not accessible via JavaScript). Use `HttpInterceptor` for token attachment.
+- **PoC**: Open the browser console on the application page and run: `console.log(localStorage.getItem('token') || sessionStorage.getItem('token'))` — if a JWT or session token is printed, it is accessible to any XSS payload.
 - **Reference**: JSON_Web_Token_for_Java_Cheat_Sheet.md, Session_Management_Cheat_Sheet.md
 
 ## RULE-AUTH-006: Session Fixation
@@ -77,6 +82,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting authentication, auth
   - Missing `request.session.cycle_id` after login (Rails)
   - `SessionCreationPolicy.ALWAYS` without regeneration logic
 - **Fix**: Invalidate old session and create new one immediately after successful login
+- **PoC**: Record the session cookie before login: `curl -v https://<target>/login 2>&1 | grep Set-Cookie`. Then login and compare: `curl -v -X POST -d 'user=test&pass=test' https://<target>/login 2>&1 | grep Set-Cookie` — if the session ID remains the same after successful authentication, the session is not regenerated.
 - **Reference**: Session_Management_Cheat_Sheet.md
 
 ## RULE-AUTH-007: Missing Authorization Checks
@@ -89,6 +95,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting authentication, auth
   - Missing authorization middleware in Express/Node.js routes
   - Django views without `@login_required` or `@permission_required`
 - **Fix**: Add authorization checks on every endpoint. Use deny-by-default access control.
+- **PoC**: `curl -s -o /dev/null -w "%{http_code}" https://<target>/api/admin/users` without any authentication header — if the response is `200` instead of `401` or `403`, the endpoint lacks authorization checks.
 - **Reference**: Authorization_Cheat_Sheet.md
 
 ## RULE-AUTH-008: IDOR - Insecure Direct Object Reference
@@ -101,6 +108,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting authentication, auth
   - `@PathVariable Long id` used directly in database query without ACL check
   - Sequential/predictable resource IDs in URLs
 - **Fix**: Verify resource ownership against authenticated user. Use indirect references or UUIDs.
+- **PoC**: Authenticate as User A, note a resource ID (e.g., order `123`). Then: `curl -H "Authorization: Bearer <userA-token>" https://<target>/api/orders/124` — if the response returns another user's order data, the endpoint does not verify resource ownership.
 - **Reference**: Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.md
 
 ## RULE-AUTH-009: User Enumeration via Error Messages
@@ -152,6 +160,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting authentication, auth
   - SAML: Signature not validated on assertions
   - SAML: Audience restriction not enforced
 - **Fix**: Validate state parameter, whitelist redirect URIs, use authorization code flow, validate SAML signatures
+- **PoC**: Start an OAuth flow and intercept the redirect: `curl -v "https://<target>/oauth/authorize?client_id=app&redirect_uri=https://evil.example.com/callback&response_type=code"` — if the server redirects to the attacker-controlled URI instead of returning an error, the redirect URI is not validated.
 - **Reference**: OAuth2_Cheat_Sheet.md, SAML_Security_Cheat_Sheet.md
 
 ## RULE-AUTH-013: Missing Rate Limiting on Auth Endpoints
@@ -178,6 +187,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting authentication, auth
   - Reset token longer than needed in URL (information leakage via Referer header)
   - Password reset does not invalidate existing sessions
 - **Fix**: Generate tokens with CSPRNG. Hash before storage (SHA-256). Set short TTL (15-30 min). Invalidate all sessions on reset. Use constant-time comparison.
+- **PoC**: Request a password reset and inspect the token in the email link. Check if: (1) the token is short or sequential (predictable), (2) `curl "https://<target>/api/reset?token=<token>"` works after 60+ minutes (no expiry), or (3) the same token works after a second reset request (not invalidated).
 - **Reference**: Forgot_Password_Cheat_Sheet.md
 
 ## RULE-AUTH-015: Missing MFA on Sensitive Operations
@@ -207,4 +217,5 @@ Rules distilled from OWASP Cheat Sheet Series for detecting authentication, auth
   - `toString()` on user/auth objects that include sensitive fields
   - Catch blocks logging entire request objects containing credentials
 - **Fix**: Never log credentials, tokens, or PII. Use structured logging with redaction. Override `toString()` to exclude sensitive fields.
+- **PoC**: `grep -rnE 'log(ger)?\.(info|debug|warn|error).*\b(password|token|secret|otp|apiKey)\b' --include="*.java" --include="*.py" --include="*.js" .` — any match where a sensitive variable is interpolated into a log statement confirms credentials may appear in log files.
 - **Reference**: Logging_Cheat_Sheet.md, Logging_Vocabulary_Cheat_Sheet.md

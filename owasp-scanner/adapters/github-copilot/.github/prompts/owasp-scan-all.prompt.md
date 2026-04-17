@@ -60,6 +60,7 @@ Then list all findings sorted by severity (CRITICAL first), using the standard f
 - File:line
 - Vulnerable code snippet
 - Recommended fix
+- Proof of concept (CRITICAL and HIGH only) — a non-destructive command or script that demonstrates the vulnerability exists in a non-production environment
 - OWASP reference
 
 End with a **Remediation Priority** section: CRITICAL with easiest fixes first, then CRITICAL requiring code changes, then HIGH findings.

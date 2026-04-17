@@ -14,6 +14,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting REST, GraphQL, WebSo
   - `requests.get(userUrl)` (Python)
   - URL parameter used to construct HTTP request without allowlist validation
 - **Fix**: Validate URLs against an allowlist of permitted domains. Block private IP ranges (10.x, 172.16-31.x, 192.168.x, 127.x, 169.254.169.254). Disable redirects.
+- **PoC**: `curl -X POST "https://<target>/api/fetch" -H "Content-Type: application/json" -d '{"url":"http://169.254.169.254/latest/meta-data/"}'` — if the response contains cloud instance metadata (AMI ID, instance type, IAM role), the server makes requests to user-controlled URLs without validation.
 - **Reference**: Server_Side_Request_Forgery_Prevention_Cheat_Sheet.md
 
 ## RULE-API-002: Mass Assignment
@@ -43,6 +44,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting REST, GraphQL, WebSo
   - No magic byte / file signature validation
   - Accepting archive files (ZIP, RAR) without extraction safeguards
 - **Fix**: Validate extension (allowlist), validate magic bytes, generate random filename, store outside webroot, enforce size limit
+- **PoC**: `curl -X POST "https://<target>/api/upload" -F "file=@test.html;type=image/png"` — if the server accepts the `.html` file (checking only Content-Type, not extension or magic bytes), then access `https://<target>/uploads/test.html` — if it renders as HTML, uploaded files can serve malicious content.
 - **Reference**: File_Upload_Cheat_Sheet.md
 
 ## RULE-API-004: Unvalidated Redirects
@@ -93,6 +95,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting REST, GraphQL, WebSo
   - Missing Origin header validation in WS handshake handler
   - No authentication on WebSocket connect
 - **Fix**: Validate Origin header against allowlist. Require authentication on connection.
+- **PoC**: Create a test HTML page on a different origin: `<script>const ws=new WebSocket('wss://<target>/ws');ws.onopen=()=>ws.send('test');ws.onmessage=e=>document.title=e.data;</script>` — open it in a browser and check if the WebSocket connection succeeds. If it does, the server accepts connections from any origin.
 - **Reference**: WebSocket_Security_Cheat_Sheet.md
 
 ## RULE-API-008: Missing Request Body Validation
@@ -165,4 +168,5 @@ Rules distilled from OWASP Cheat Sheet Series for detecting REST, GraphQL, WebSo
   - Shared secrets for service-to-service auth (instead of short-lived tokens)
   - No service mesh or network policies
 - **Fix**: Use mTLS for service-to-service communication. Use short-lived JWT tokens. Implement network policies.
+- **PoC**: `grep -rnE 'http://' --include="*.java" --include="*.py" --include="*.yaml" . | grep -vE '(localhost|127\.0\.0\.1|example\.com|test)'` — matches with internal service hostnames confirm plaintext HTTP for inter-service calls. Also: `curl -v http://<internal-service>:8080/actuator/health` from within the cluster to verify no TLS is required.
 - **Reference**: Microservices_Security_Cheat_Sheet.md

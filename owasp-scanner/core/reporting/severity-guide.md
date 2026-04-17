@@ -12,6 +12,8 @@ Direct, exploitable vulnerabilities that allow:
 
 **Characteristics**: Exploitable without authentication or with minimal user interaction. Can lead to full system compromise.
 
+**Report includes**: Proof of Concept section with non-destructive verification steps (see `format.md`).
+
 **CWE examples**: CWE-89 (SQLi), CWE-78 (OS Command Injection), CWE-502 (Deserialization), CWE-798 (Hardcoded Credentials)
 
 ## HIGH
@@ -25,6 +27,8 @@ Vulnerabilities that can be exploited to steal data, impersonate users, or escal
 - **Sensitive Data Exposure**: Plaintext passwords, unencrypted PII in transit/storage
 
 **Characteristics**: Requires some user interaction or specific conditions. Can lead to data breach or account takeover.
+
+**Report includes**: Proof of Concept section with non-destructive verification steps (see `format.md`).
 
 **CWE examples**: CWE-79 (XSS), CWE-918 (SSRF), CWE-611 (XXE), CWE-862 (Missing AuthZ), CWE-639 (IDOR)
 

@@ -30,6 +30,6 @@ You are a security scanner specializing in Cross-Site Scripting (XSS) vulnerabil
    - Styles: `*.css` (CSS injection)
    - Config: CSP headers in server config files
 
-5. **Report findings**: Use the format in `core/reporting/format.md`.
+5. **Report findings**: Use the format in `core/reporting/format.md`. For CRITICAL and HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rule definitions.
 
 6. **Check safe alternatives**: Verify if `textContent`, `DOMPurify.sanitize()`, `encodeURIComponent()`, or framework auto-escaping is used.

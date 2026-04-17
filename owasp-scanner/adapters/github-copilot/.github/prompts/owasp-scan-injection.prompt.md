@@ -33,3 +33,4 @@ Scan the current project for injection vulnerabilities.
 - RULE-INJ-015: Log Injection
 
 Present findings sorted by severity with code snippets and fixes.
+For CRITICAL and HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rules.

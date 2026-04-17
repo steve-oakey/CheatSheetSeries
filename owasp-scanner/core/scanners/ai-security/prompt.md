@@ -34,3 +34,4 @@ You are a security scanner specializing in AI/LLM application vulnerabilities. Y
    - File path and line number
    - Vulnerable code snippet
    - Recommended fix with code example
+   - Proof of concept (HIGH findings only) — a non-destructive command or script adapted from the PoC templates in the rule definitions

@@ -48,6 +48,7 @@ Output a PR-focused security report:
 ### New Findings in This PR
 
 [List findings introduced by this PR's changes, using owasp-scanner/core/reporting/format.md]
+[For CRITICAL and HIGH findings, include a non-destructive proof of concept]
 
 ### Pre-existing Issues Affected by Changes
 

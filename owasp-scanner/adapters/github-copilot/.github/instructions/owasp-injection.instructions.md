@@ -51,6 +51,10 @@ When reviewing or generating code in these files, watch for injection vulnerabil
 - `Model.find({email: req.query.email})` without type checking
 - **Fix**: Validate input types. Use `mongo-sanitize` or explicit type casting.
 
+## Proof of Concept
+
+For CRITICAL and HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rule definitions. Use benign payloads that prove the vulnerability exists without causing damage.
+
 ## For Comprehensive Scanning
 
 Read the full rule set at `owasp-scanner/core/scanners/injection/rules.md` and language-specific patterns in `owasp-scanner/core/scanners/injection/patterns/`.

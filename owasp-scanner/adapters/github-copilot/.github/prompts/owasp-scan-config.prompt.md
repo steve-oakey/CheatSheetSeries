@@ -32,3 +32,4 @@ Scan the current project for security misconfigurations.
 - RULE-CFG-014 through CFG-018: Directory listing, logging config, session config
 
 Present findings sorted by severity with code snippets and fixes.
+For HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rules.

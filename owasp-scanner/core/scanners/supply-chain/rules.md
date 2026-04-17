@@ -22,6 +22,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting secrets in code, vul
   - `xoxb-` or `xoxp-` (Slack tokens)
   - Database connection strings with embedded credentials
 - **Fix**: Use environment variables, vault services (AWS Secrets Manager, HashiCorp Vault, Azure Key Vault), or externalized config
+- **PoC**: `grep -rnE '(password|api[_-]?key|secret|token)\s*=\s*"[^"]{8,}"' --include="*.java" --include="*.py" --include="*.js" --include="*.properties" .` — any match with a literal string value of 8+ characters confirms hardcoded credentials. Also check: `git log --all -p -S 'password' --include="*.java" | head -50` to find secrets in git history.
 - **Reference**: Secrets_Management_Cheat_Sheet.md
 
 ## RULE-SC-002: Secrets in Configuration Files
@@ -35,6 +36,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting secrets in code, vul
   - `terraform.tfvars` with sensitive values
   - `config.json`/`settings.json` with API keys or passwords
 - **Fix**: Use `.gitignore` for `.env` files. Use Spring Boot config server or environment variables for secrets. Use terraform vault provider.
+- **PoC**: `git ls-files | grep -iE '(\.env|credentials|service-account|tfvars)$'` — any match confirms sensitive files are tracked in version control. Then: `grep -l 'password\|secret\|api_key' $(git ls-files '*.properties' '*.yml')` to find credentials in committed config files.
 - **Reference**: Secrets_Management_Cheat_Sheet.md
 
 ## RULE-SC-003: Weak Cryptographic Algorithms
@@ -50,6 +52,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting secrets in code, vul
   - `MD5` for integrity/signatures (not password hashing -- see RULE-AUTH-001)
   - `SHA-1` for signatures or integrity
 - **Fix**: Use AES-256 with GCM mode for symmetric encryption. Use RSA-2048+ or Curve25519 for asymmetric.
+- **PoC**: `grep -rnE '(DES|DESede|RC4|RC2|Blowfish|MD5|SHA-1)' --include="*.java" --include="*.py" --include="*.js" . | grep -i 'cipher\|encrypt\|MessageDigest\|hashlib'` — any match confirms usage of deprecated cryptographic algorithms.
 - **Reference**: Cryptographic_Storage_Cheat_Sheet.md
 
 ## RULE-SC-004: Insecure Block Cipher Mode
@@ -62,6 +65,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting secrets in code, vul
   - Any `*/ECB/*` cipher mode
   - CBC without HMAC (no authenticated encryption)
 - **Fix**: Use authenticated encryption: `AES/GCM/NoPadding`. If CBC required, use Encrypt-then-MAC.
+- **PoC**: `grep -rnE 'ECB' --include="*.java" --include="*.py" .` — any match in a `Cipher.getInstance()` call confirms ECB mode usage. To demonstrate the weakness: `python3 -c "from Crypto.Cipher import AES;c=AES.new(b'0123456789abcdef',AES.MODE_ECB);print(c.encrypt(b'AAAAAAAAAAAAAAAA')==c.encrypt(b'AAAAAAAAAAAAAAAA'))"` outputs `True`, showing identical plaintext blocks produce identical ciphertext (pattern leakage).
 - **Reference**: Cryptographic_Storage_Cheat_Sheet.md
 
 ## RULE-SC-005: Weak Random Number Generation
@@ -76,6 +80,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting secrets in code, vul
   - `mt_rand()` in PHP
   - `crypto.pseudoRandomBytes()` (Node.js deprecated)
 - **Fix**: Use CSPRNGs: `java.security.SecureRandom` (Java), `secrets` module (Python), `crypto.randomBytes()` (Node.js)
+- **PoC**: `grep -rnE '(java\.util\.Random|Math\.random|random\.random|mt_rand)' --include="*.java" --include="*.js" --include="*.py" --include="*.php" .` — any match in security-sensitive context (token generation, key derivation, session IDs) confirms weak RNG. Demonstrate: `python3 -c "import random;random.seed(42);print([random.randint(0,999999) for _ in range(5)])"` — the output is deterministic and reproducible given the seed.
 - **Reference**: Cryptographic_Storage_Cheat_Sheet.md
 
 ## RULE-SC-006: Missing Dependency Scanning
@@ -117,6 +122,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting secrets in code, vul
   - Overly permissive `permissions:` in GitHub Actions
   - `pull_request_target` with `actions/checkout` (PR code execution with secrets)
 - **Fix**: Use CI/CD platform secret management. Use OIDC for cloud authentication. Restrict permissions to minimum.
+- **PoC**: `grep -rnE '(password|secret|token|key)\s*[:=]\s*["'\'][^${}]' --include="*.yml" --include="*.yaml" .github/workflows/ Jenkinsfile .gitlab-ci.yml` — any match with a literal value (not a `${{ secrets.* }}` reference) confirms plaintext credentials in pipeline config. Also check: `grep -rn 'permissions:' .github/workflows/ | grep -v 'contents: read'` for overly permissive GitHub Actions permissions.
 - **Reference**: CI_CD_Security_Cheat_Sheet.md
 
 ## RULE-SC-009: Hardcoded Encryption Keys
@@ -130,6 +136,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting secrets in code, vul
   - Key material in properties/config files
   - IV (initialization vector) hardcoded or reused
 - **Fix**: Store keys in KMS (AWS KMS, Azure Key Vault). Generate with CSPRNG. Never commit keys to source control.
+- **PoC**: `grep -rnE '(SecretKeySpec|encryption[_]?key|ENCRYPTION_KEY|private.static.final.String.*(KEY|key|Secret))' --include="*.java" --include="*.js" --include="*.py" .` — any match where the key value is a string literal confirms hardcoded cryptographic keys. If the key is in source, anyone with repo access can decrypt all data encrypted with it.
 - **Reference**: Key_Management_Cheat_Sheet.md
 
 ## RULE-SC-010: Missing .gitignore for Sensitive Files

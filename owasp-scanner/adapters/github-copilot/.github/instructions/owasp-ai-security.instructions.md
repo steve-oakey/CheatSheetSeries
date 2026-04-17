@@ -64,6 +64,10 @@ When reviewing or generating AI/LLM-related code, watch for these vulnerabilitie
 - Markdown rendering of LLM output without link/image filtering
 - **Fix**: Sanitize LLM output before rendering. Filter markdown image/link URLs.
 
+## Proof of Concept
+
+For HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rule definitions. Use benign payloads that prove the vulnerability exists without causing damage.
+
 ## For Comprehensive Scanning
 
 Read the full rule set at `owasp-scanner/core/scanners/ai-security/rules.md` and language-specific patterns in `owasp-scanner/core/scanners/ai-security/patterns/`.

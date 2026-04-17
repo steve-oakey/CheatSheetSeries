@@ -13,6 +13,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting injection vulnerabil
   - f-strings with SQL: `f"SELECT ... {user_input}"`
   - MyBatis `${}` interpolation (unsafe) vs `#{}` (safe)
 - **Fix**: Use parameterized queries with bind variables (`?` placeholders)
+- **PoC**: `curl "https://<target>/api/users?name=test' OR '1'='1' --"` — if the response returns all users instead of one (or returns data without proper authorization), the endpoint is vulnerable to SQL injection.
 - **Reference**: SQL_Injection_Prevention_Cheat_Sheet.md#defense-option-1
 
 ## RULE-INJ-002: Use of Non-Parameterized Statement
@@ -24,6 +25,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting injection vulnerabil
   - `Statement.execute(query)` with dynamic SQL
   - `connection.createStatement()` followed by dynamic query execution
 - **Fix**: Replace with `connection.prepareStatement(query)` using `?` placeholders and `setString()`/`setInt()` etc.
+- **PoC**: `curl "https://<target>/api/items?id=1 UNION SELECT NULL,table_name,NULL FROM information_schema.tables--"` — if the response includes database table names, the endpoint accepts unparameterized SQL.
 - **Reference**: SQL_Injection_Prevention_Cheat_Sheet.md#safe-java-prepared-statement-example
 
 ## RULE-INJ-003: ORM Query Injection
@@ -36,6 +38,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting injection vulnerabil
   - `entityManager.createNativeQuery("... " + param)` (native SQL injection)
   - `@Query("... " + ...)` in Spring Data (SpEL injection via `?#{...}`)
 - **Fix**: Use named parameters: `session.createQuery("FROM User WHERE name = :name").setParameter("name", input)`
+- **PoC**: `curl "https://<target>/api/search?q=test' OR '1'='1"` — if the response returns all records regardless of the search term, the ORM query is injectable.
 - **Reference**: Query_Parameterization_Cheat_Sheet.md#hibernate-hql
 
 ## RULE-INJ-004: OS Command Injection
@@ -51,6 +54,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting injection vulnerabil
   - `subprocess.call(userInput, shell=True)` (Python)
   - `system(userInput)` (C/PHP)
 - **Fix**: Use array-based command execution with arguments as separate elements. `new ProcessBuilder("cmd", "arg1", "arg2")`
+- **PoC**: `curl -X POST "https://<target>/api/convert" -d "filename=test.pdf;id"` — if the response includes OS user information (e.g., `uid=1000`), the input is passed to a shell command unsanitized.
 - **Reference**: OS_Command_Injection_Defense_Cheat_Sheet.md
 
 ## RULE-INJ-005: LDAP Injection
@@ -62,6 +66,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting injection vulnerabil
   - `ctx.search(baseDN, filterWithConcat, controls)`
   - `"cn=" + userInput` (DN construction without escaping)
 - **Fix**: Use parameterized LDAP filters: `ctx.search(baseDN, "(&(uid={0})(objectClass=person))", new Object[]{userInput}, controls)`
+- **PoC**: `curl "https://<target>/api/users?username=*)(objectClass=*"` — if the response returns multiple user entries instead of an error, the LDAP filter is injectable.
 - **Reference**: LDAP_Injection_Prevention_Cheat_Sheet.md
 
 ## RULE-INJ-006: XML External Entity (XXE) - Unsafe Parser Configuration
@@ -77,6 +82,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting injection vulnerabil
   - `TransformerFactory` without `ACCESS_EXTERNAL_DTD` set to empty string
   - `SchemaFactory` without `ACCESS_EXTERNAL_DTD` and `ACCESS_EXTERNAL_SCHEMA` restrictions
 - **Fix**: Disable DTD processing and external entities. See cheatsheet for parser-specific configuration.
+- **PoC**: `curl -X POST "https://<target>/api/xml" -H "Content-Type: application/xml" -d '<?xml version="1.0"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/hostname">]><root>&xxe;</root>'` — if the response contains the server's hostname, the XML parser processes external entities.
 - **Reference**: XML_External_Entity_Prevention_Cheat_Sheet.md
 
 ## RULE-INJ-007: XMLDecoder Usage
@@ -88,6 +94,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting injection vulnerabil
   - `new XMLDecoder(`
   - `xmlDecoder.readObject()`
 - **Fix**: Replace XMLDecoder with a safe XML parsing library (JAXB, Jackson XML, etc.)
+- **PoC**: `grep -rn "XMLDecoder" --include="*.java" .` — any match confirms usage of a fundamentally unsafe API. Verify the decoded input source is external/untrusted by tracing the InputStream origin.
 - **Reference**: XML_External_Entity_Prevention_Cheat_Sheet.md#xmldecoder
 
 ## RULE-INJ-008: Unsafe Java Deserialization
@@ -101,6 +108,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting injection vulnerabil
   - Content-Type `application/x-java-serialized-object` accepted
   - Byte sequences starting with `AC ED 00 05` (hex) or `rO0` (base64)
 - **Fix**: Override `resolveClass()` with a class whitelist, use SerialKiller library, or switch to JSON serialization
+- **PoC**: `curl -X POST "https://<target>/api/import" -H "Content-Type: application/x-java-serialized-object" -d @payload.bin` where `payload.bin` contains a benign `java.util.HashMap` serialized object (hex: `ACED0005...`). If the server deserializes it without rejection, any class on the classpath can be instantiated.
 - **Reference**: Deserialization_Cheat_Sheet.md#java
 
 ## RULE-INJ-009: Unsafe Deserialization (Python)
@@ -113,6 +121,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting injection vulnerabil
   - `jsonpickle.decode()` on untrusted data
   - `shelve.open()` on untrusted data
 - **Fix**: Use `json.loads()` for data interchange. If YAML needed, use `yaml.safe_load()`
+- **PoC**: `python3 -c "import pickle,base64; print(base64.b64encode(pickle.dumps({'test':'safe'})).decode())"` — submit the resulting base64 to the endpoint. If the server accepts and processes it, the deserialization path is confirmed. A malicious pickle could execute arbitrary code.
 - **Reference**: Deserialization_Cheat_Sheet.md#python
 
 ## RULE-INJ-010: Unsafe Deserialization (Jackson Polymorphism)
@@ -124,6 +133,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting injection vulnerabil
   - `@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)` (class-based polymorphism)
   - `@JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS)`
 - **Fix**: Disable default typing. Use `@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)` with explicit `@JsonSubTypes` whitelist
+- **PoC**: `curl -X POST "https://<target>/api/data" -H "Content-Type: application/json" -d '{"@class":"java.util.HashMap","key":"value"}'` — if the server instantiates `HashMap` from the `@class` hint instead of rejecting it, polymorphic deserialization is enabled and arbitrary classes can be targeted.
 - **Reference**: Deserialization_Cheat_Sheet.md#java
 
 ## RULE-INJ-011: Unsafe Deserialization Libraries
@@ -137,6 +147,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting injection vulnerabil
   - `json-io` with `@type` property support
   - `YamlBeans` < v1.16 with UnsafeYamlConfig
 - **Fix**: Update to safe versions and enable security features (SafeConstructor, class registration, etc.)
+- **PoC**: `grep -rn "new Yaml()\|new Kryo()\|fastjson" --include="*.java" .` — matches without corresponding `SafeConstructor`, `setRegistrationRequired(true)`, or auto-type disabled confirm unsafe library usage. Check the library version in `pom.xml`/`build.gradle` for known CVEs.
 - **Reference**: Deserialization_Cheat_Sheet.md
 
 ## RULE-INJ-012: NoSQL Injection
@@ -149,6 +160,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting injection vulnerabil
   - User-controlled operators: `$where`, `$regex`, `$expr`, `$gt`, `$ne` from request body
   - Raw JSON from client used directly as query filter
 - **Fix**: Use driver query objects, whitelist-validate operators, reject input containing `$` prefixed keys
+- **PoC**: `curl -X POST "https://<target>/api/login" -H "Content-Type: application/json" -d '{"username":{"$gt":""},"password":{"$gt":""}}'` — if the server returns a successful authentication response, the NoSQL query accepts operator injection.
 - **Reference**: NoSQL_Security_Cheat_Sheet.md
 
 ## RULE-INJ-013: Missing Input Validation
@@ -172,6 +184,7 @@ Rules distilled from OWASP Cheat Sheet Series for detecting injection vulnerabil
   - Dynamic SQL via `EXECUTE IMMEDIATE` with user parameters
   - `PREPARE` statement with concatenated SQL
 - **Fix**: Use parameterized stored procedures: `connection.prepareCall("{call sp_name(?)}")` with bind parameters
+- **PoC**: `curl "https://<target>/api/report?param=test'; WAITFOR DELAY '0:0:5'--"` — if the response is delayed by ~5 seconds, the stored procedure concatenates input into dynamic SQL (time-based blind injection).
 - **Reference**: SQL_Injection_Prevention_Cheat_Sheet.md#defense-option-2
 
 ## RULE-INJ-015: XPath/XQuery Injection
@@ -183,4 +196,5 @@ Rules distilled from OWASP Cheat Sheet Series for detecting injection vulnerabil
   - `xpath.evaluate("... " + param, ...)`
   - `XPathFactory` with unsanitized expressions
 - **Fix**: Use parameterized XPath queries or precompiled XPath expressions with variable binding
+- **PoC**: `curl "https://<target>/api/search?name=test' or '1'='1"` — if the response returns all XML nodes instead of a filtered subset, the XPath expression is injectable.
 - **Reference**: Injection_Prevention_Cheat_Sheet.md

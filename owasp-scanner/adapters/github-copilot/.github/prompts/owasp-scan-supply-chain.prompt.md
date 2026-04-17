@@ -30,3 +30,4 @@ Scan the current project for secrets in code, vulnerable dependencies, CI/CD mis
 - RULE-SC-011/012: Container image security, SBOM/provenance
 
 Present findings sorted by severity with code snippets and fixes.
+For CRITICAL and HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rules.
