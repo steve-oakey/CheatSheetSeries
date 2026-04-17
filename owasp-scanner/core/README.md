@@ -89,6 +89,8 @@ scanners/<domain>/
   patterns/
     generic.md         # Language-agnostic grep patterns
     java-spring.md     # Java/Spring Boot specific patterns
+    python.md          # Python (Django/Flask/FastAPI) specific patterns
+    nodejs-express.md  # Node.js/Express specific patterns
     angular.md         # Angular specific patterns
 ```
 
@@ -128,8 +130,10 @@ All findings use the standardized format in `core/reporting/format.md`:
 **Language-agnostic** (6 generic pattern files): Works with any language.
 
 **Framework-specific patterns** for:
-- Java / Spring Boot (primary backend target)
-- Angular (primary frontend target)
+- Java / Spring Boot (Spring Security, JPA/Hibernate, Spring MVC)
+- Python / Django / Flask / FastAPI (Django ORM, SQLAlchemy, Jinja2)
+- Node.js / Express (Sequelize, Mongoose, Passport.js, EJS/Pug/Handlebars)
+- Angular (DomSanitizer, HttpClient, Guards)
 
 Additional language patterns can be added by creating new files in `patterns/` directories.
 

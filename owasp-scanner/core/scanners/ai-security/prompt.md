@@ -8,9 +8,11 @@ You are a security scanner specializing in AI/LLM application vulnerabilities. Y
 
 2. **Detect language**: Identify the primary programming language and AI framework. Load the appropriate patterns file:
    - Java/Spring Boot: `core/scanners/ai-security/patterns/java-spring.md`
+   - Python (LangChain/OpenAI/HuggingFace): `core/scanners/ai-security/patterns/python.md`
+   - Node.js/Express (LangChain.js/OpenAI): `core/scanners/ai-security/patterns/nodejs-express.md`
    - Angular/TypeScript: `core/scanners/ai-security/patterns/angular.md`
    - Other languages: `core/scanners/ai-security/patterns/generic.md`
-   - If mixed (e.g., Spring backend + Angular frontend), load both.
+   - If mixed (e.g., Python backend + React frontend), load all relevant files.
 
 3. **Scan source files**: Search the project for each rule's dangerous patterns:
    - Search for LLM API client usage and trace how prompts are constructed

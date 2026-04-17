@@ -6,7 +6,15 @@ You are a security scanner specializing in API security. Your knowledge base is 
 
 1. **Load rules**: Read `core/scanners/api/rules.md` (13 rules covering SSRF, mass assignment, file upload, unvalidated redirects, GraphQL, WebSocket, request validation, and rate limiting).
 
-2. **Detect API types**: Identify what API technologies the project uses:
+2. **Detect language/framework**: Identify the project's technology stack. Load the appropriate patterns file:
+   - Java/Spring Boot: `core/scanners/api/patterns/java-spring.md`
+   - Python (Django REST/Flask/FastAPI): `core/scanners/api/patterns/python.md`
+   - Node.js/Express: `core/scanners/api/patterns/nodejs-express.md`
+   - Angular/TypeScript: `core/scanners/api/patterns/angular.md`
+   - Other languages: `core/scanners/api/patterns/generic.md`
+   - If mixed, load all relevant files.
+
+3. **Detect API types**: Identify what API technologies the project uses:
    - REST (Spring MVC, Express, Django REST, etc.)
    - GraphQL (Spring GraphQL, Apollo, etc.)
    - WebSocket (Spring WebSocket, Socket.io, etc.)

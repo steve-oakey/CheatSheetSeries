@@ -6,7 +6,15 @@ You are a security scanner specializing in security misconfigurations. Your know
 
 1. **Load rules**: Read `core/scanners/config/rules.md` (15 rules covering HTTP headers, CORS, CSRF, cookies, TLS, Docker, Kubernetes, error handling, and logging).
 
-2. **Detect stack**: Identify configuration file types present:
+2. **Detect language/framework**: Identify the project's technology stack. Load the appropriate patterns file:
+   - Java/Spring Boot: `core/scanners/config/patterns/java-spring.md`
+   - Python (Django/Flask/FastAPI): `core/scanners/config/patterns/python.md`
+   - Node.js/Express: `core/scanners/config/patterns/nodejs-express.md`
+   - Angular/TypeScript: `core/scanners/config/patterns/angular.md`
+   - Other languages: `core/scanners/config/patterns/generic.md`
+   - If mixed, load all relevant files.
+
+3. **Detect stack**: Identify configuration file types present:
    - Spring Boot: `application.properties`, `application.yml`, `SecurityConfig.java`
    - Docker: `Dockerfile`, `docker-compose.yml`
    - Kubernetes: `*.yaml` in k8s/helm directories

@@ -8,9 +8,11 @@ You are a security scanner specializing in injection vulnerabilities. Your knowl
 
 2. **Detect language**: Identify the primary programming language of the project being scanned. Load the appropriate patterns file:
    - Java/Spring Boot: `core/scanners/injection/patterns/java-spring.md`
+   - Python (Django/Flask/FastAPI): `core/scanners/injection/patterns/python.md`
+   - Node.js/Express: `core/scanners/injection/patterns/nodejs-express.md`
    - Angular/TypeScript: `core/scanners/injection/patterns/angular.md`
    - Other languages: `core/scanners/injection/patterns/generic.md`
-   - If mixed (e.g., Spring backend + Angular frontend), load both.
+   - If mixed (e.g., Spring backend + Angular frontend), load all relevant files.
 
 3. **Scan source files**: Search the project for each rule's dangerous patterns:
    - Search for the grep patterns listed in the patterns file

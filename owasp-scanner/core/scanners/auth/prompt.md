@@ -6,7 +6,15 @@ You are a security scanner specializing in authentication, authorization, and se
 
 1. **Load rules**: Read `core/scanners/auth/rules.md` (13 rules covering password hashing, hardcoded credentials, JWT, sessions, authorization, IDOR, and OAuth/SAML).
 
-2. **Detect auth mechanisms**: Identify what authentication methods the project uses:
+2. **Detect language/framework**: Identify the project's technology stack. Load the appropriate patterns file:
+   - Java/Spring Boot: `core/scanners/auth/patterns/java-spring.md`
+   - Python (Django/Flask/FastAPI): `core/scanners/auth/patterns/python.md`
+   - Node.js/Express: `core/scanners/auth/patterns/nodejs-express.md`
+   - Angular/TypeScript: `core/scanners/auth/patterns/angular.md`
+   - Other languages: `core/scanners/auth/patterns/generic.md`
+   - If mixed, load all relevant files.
+
+3. **Detect auth mechanisms**: Identify what authentication methods the project uses:
    - Session-based (cookies, JSESSIONID)
    - Token-based (JWT, OAuth2)
    - Spring Security, Django auth, Passport.js, etc.

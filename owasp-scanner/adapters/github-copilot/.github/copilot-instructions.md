@@ -6,7 +6,7 @@ When asked to perform a security scan, review code for vulnerabilities, or check
 
 The scanning rules are in `owasp-scanner/core/scanners/`. Each domain has:
 - `rules.md` -- structured vulnerability patterns with rule IDs, CWEs, and fixes
-- `patterns/` -- language-specific detection patterns (java-spring.md, angular.md, generic.md)
+- `patterns/` -- language-specific detection patterns (java-spring.md, python.md, nodejs-express.md, angular.md, generic.md)
 - `prompt.md` -- detailed scanning instructions
 
 ## Available Scan Domains
@@ -23,7 +23,7 @@ The scanning rules are in `owasp-scanner/core/scanners/`. Each domain has:
 
 ## How to Scan
 
-1. Detect the project's technology stack (Java/Spring, Angular, Node.js, etc.)
+1. Detect the project's technology stack (Java/Spring, Python/Django/Flask/FastAPI, Node.js/Express, Angular, etc.)
 2. Read the relevant `rules.md` files for the requested scan domains
 3. Load the appropriate `patterns/*.md` file for the detected language
 4. Search the code for dangerous patterns listed in the rules
