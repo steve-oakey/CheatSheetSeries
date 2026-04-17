@@ -1,49 +1,31 @@
-# OWASP Security Scanner Instructions
+<!-- OWASP-SCANNER-START -->
+# OWASP Security Scanner
 
-When asked to perform a security scan, review code for vulnerabilities, or check security, follow the OWASP scanner rules.
+This project has the OWASP Security Scanner installed — 103 rules across 7 vulnerability domains, derived from the OWASP Cheat Sheet Series.
+
+## Available Prompt Commands
+
+Use these reusable prompts from the `.github/prompts/` directory:
+- **owasp-scan-all** — Full security scan across all 7 domains
+- **owasp-scan-injection** — SQL, OS command, LDAP, XXE, deserialization
+- **owasp-scan-xss** — DOM XSS, framework escapes, CSP, prototype pollution
+- **owasp-scan-config** — Headers, CORS, CSRF, cookies, TLS, Docker, K8s
+- **owasp-scan-auth** — Password hashing, JWT, sessions, authorization, IDOR
+- **owasp-scan-api** — SSRF, mass assignment, file upload, GraphQL, WebSocket
+- **owasp-scan-supply-chain** — Secrets, weak crypto, dependencies, CI/CD
+- **owasp-scan-ai-security** — Prompt injection, LLM output, agent permissions
+- **owasp-quick-scan** — Fast triage: top 23 critical patterns
+- **owasp-pr-review** — Security review of changed files only
+
+## Custom Agent
+
+Use `@owasp-security-scanner` to invoke the dedicated security scanner agent.
+
+## Auto-Active Instructions
+
+Path-specific security instructions in `.github/instructions/` automatically activate when editing relevant files (e.g., injection checks for `*.java`, XSS checks for `*.tsx`).
 
 ## Scanner Rules Location
 
-The scanning rules are in `owasp-scanner/core/scanners/`. Each domain has:
-- `rules.md` -- structured vulnerability patterns with rule IDs, CWEs, and fixes
-- `patterns/` -- language-specific detection patterns (java-spring.md, python.md, nodejs-express.md, angular.md, generic.md)
-- `prompt.md` -- detailed scanning instructions
-
-## Available Scan Domains
-
-| Domain | Rules File | Focus |
-|--------|-----------|-------|
-| injection | `core/scanners/injection/rules.md` | SQL, OS command, LDAP, XXE, deserialization |
-| xss | `core/scanners/xss/rules.md` | XSS, DOM XSS, CSP, prototype pollution |
-| config | `core/scanners/config/rules.md` | HTTP headers, CORS, CSRF, Docker, K8s |
-| auth | `core/scanners/auth/rules.md` | Authentication, JWT, sessions, authorization |
-| api | `core/scanners/api/rules.md` | SSRF, mass assignment, file upload, GraphQL |
-| supply-chain | `core/scanners/supply-chain/rules.md` | Secrets, crypto, dependencies, CI/CD |
-| ai-security | `core/scanners/ai-security/rules.md` | Prompt injection, LLM output validation, agent security |
-
-## How to Scan
-
-1. Detect the project's technology stack (Java/Spring, Python/Django/Flask/FastAPI, Node.js/Express, Angular, etc.)
-2. Read the relevant `rules.md` files for the requested scan domains
-3. Load the appropriate `patterns/*.md` file for the detected language
-4. Search the code for dangerous patterns listed in the rules
-5. Report findings with: Rule ID, severity, CWE, file:line, code snippet, fix
-
-## Finding Format
-
-```
-**RULE-INJ-001** (CRITICAL, CWE-89): SQL Injection
-File: src/UserDAO.java:42
-Code: `String query = "SELECT * FROM users WHERE id = " + id;`
-Fix: Use PreparedStatement with ? placeholders
-```
-
-## Severity Levels
-- **CRITICAL**: RCE, SQLi, auth bypass, hardcoded credentials
-- **HIGH**: XSS, SSRF, XXE, broken access control
-- **MEDIUM**: Missing headers, CSRF disabled, weak config
-- **LOW**: Best practice improvements
-
-## Reference Cheatsheets
-
-Full OWASP cheatsheets are in `owasp-scanner/core/reference/cheatsheets/` for deeper remediation guidance.
+Full rules are in `owasp-scanner/core/scanners/<domain>/rules.md`. Language-specific patterns are in `owasp-scanner/core/scanners/<domain>/patterns/`. Report format is in `owasp-scanner/core/reporting/format.md`. OWASP reference cheatsheets are in `owasp-scanner/core/reference/cheatsheets/`.
+<!-- OWASP-SCANNER-END -->
