@@ -14,5 +14,5 @@ Perform a configuration security scan of the current project.
 2. Read the scanner prompt from `${CLAUDE_PLUGIN_ROOT}/../../core/scanners/config/prompt.md`
 3. Load the appropriate patterns file from `${CLAUDE_PLUGIN_ROOT}/../../core/scanners/config/patterns/`
 4. Search configuration files for security misconfigurations
-5. Report findings using the format in `${CLAUDE_PLUGIN_ROOT}/../../core/reporting/format.md`
-6. For HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rules
+5. Format every finding **exactly** as specified in `${CLAUDE_PLUGIN_ROOT}/../../core/reporting/format.md` — copy the finding template verbatim and only replace `{{...}}` placeholders. Follow the DO/DO NOT format rules in that file.
+6. Include the Proof of Concept section only for CRITICAL and HIGH findings; omit it entirely for MEDIUM, LOW, and INFO. Adapt PoCs from the templates in the rules.

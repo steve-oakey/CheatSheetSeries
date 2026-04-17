@@ -37,4 +37,4 @@ You are a security scanner specializing in API security. Your knowledge base is 
    - Schemas: `*.graphql`, `schema.graphqls`
    - Upload handlers: `*Upload*.java`, `*File*.java`, `multer*`
 
-5. **Report findings**: Use the format in `core/reporting/format.md`. For HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rule definitions.
+5. **Report findings**: Format every finding **exactly** as specified in `core/reporting/format.md` — copy the finding template verbatim and only replace `{{...}}` placeholders. Follow the DO/DO NOT format rules in that file. Include the Proof of Concept section only for CRITICAL and HIGH findings; omit it entirely for MEDIUM, LOW, and INFO. Adapt PoCs from the templates in the rule definitions.

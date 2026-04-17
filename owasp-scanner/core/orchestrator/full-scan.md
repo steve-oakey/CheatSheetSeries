@@ -44,31 +44,19 @@ Run all 6 scanners, each following its `prompt.md` instructions:
 
 ### Step 3: Generate Report
 
-After all scanners complete, compile findings into a unified report:
+After all scanners complete, compile findings into a unified report.
+
+The report **MUST** follow the structure in `core/reporting/report-template.md` exactly — copy the template verbatim and only replace `{{...}}` placeholders. Each individual finding **MUST** follow the finding template in `core/reporting/format.md` exactly — copy it verbatim and only replace `{{...}}` placeholders. Read the DO/DO NOT format rules in `core/reporting/format.md` before generating output. Do not paraphrase, reorder, or add extra sections beyond what the templates specify.
 
 #### Executive Summary
-```
-## Security Scan Results
 
-**Project**: [name]
-**Scanned**: [date]
-**Technology Stack**: [detected stack]
-
-| Severity | Count |
-|----------|-------|
-| CRITICAL | N     |
-| HIGH     | N     |
-| MEDIUM   | N     |
-| LOW      | N     |
-| INFO     | N     |
-| **Total** | **N** |
-```
+Use the executive summary table from `core/reporting/report-template.md`.
 
 #### Findings (sorted by severity)
 
-List all findings using the format in `core/reporting/format.md`, grouped by severity (CRITICAL first).
+List all findings using the finding template from `core/reporting/format.md`, grouped by severity (CRITICAL first).
 
-For CRITICAL and HIGH findings, include a **Proof of Concept** section with a non-destructive command or script that demonstrates the vulnerability exists (e.g., curl with a benign payload, browser console script, or grep command). Use the PoC templates from the rule definitions in `core/scanners/<domain>/rules.md` and adapt them to the actual code found.
+Include the Proof of Concept section only for CRITICAL and HIGH findings; omit it entirely for MEDIUM, LOW, and INFO. Adapt PoCs from the templates in `core/scanners/<domain>/rules.md` to the actual code found.
 
 #### Remediation Priority
 

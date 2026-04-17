@@ -36,27 +36,28 @@ For each changed file:
 
 ## Step 4: Report
 
-Output a PR-focused security report:
+Output a PR-focused security report. Format every individual finding **exactly** as specified in `owasp-scanner/core/reporting/format.md` — copy the finding template verbatim and only replace `{{...}}` placeholders. Follow the DO/DO NOT format rules in that file. Include the Proof of Concept section only for CRITICAL and HIGH findings; omit it entirely for MEDIUM, LOW, and INFO.
+
+Use this structure for the PR report:
 
 ```
 ## PR Security Review
 
-**Branch**: [branch name]
-**Files changed**: N
-**Security-relevant files**: N
+**Branch**: {{BRANCH_NAME}}
+**Files changed**: {{FILES_CHANGED_COUNT}}
+**Security-relevant files**: {{SECURITY_FILES_COUNT}}
 
 ### New Findings in This PR
 
-[List findings introduced by this PR's changes, using owasp-scanner/core/reporting/format.md]
-[For CRITICAL and HIGH findings, include a non-destructive proof of concept]
+{{FINDINGS_USING_FORMAT_MD}}
 
 ### Pre-existing Issues Affected by Changes
 
-[List pre-existing security issues that interact with modified code]
+{{PREEXISTING_FINDINGS_OR_NONE}}
 
 ### Recommendations
 
-[Specific suggestions for the PR author]
+{{RECOMMENDATIONS_FOR_PR_AUTHOR}}
 ```
 
 This is a targeted review, not a full scan. Only report issues related to the changed code. Recommend running the full scan prompt (`owasp-scan-all`) for comprehensive coverage.

@@ -15,8 +15,8 @@ Perform an injection vulnerability scan of the current project.
 3. Detect the project's language and load the appropriate patterns file from `${CLAUDE_PLUGIN_ROOT}/../../core/scanners/injection/patterns/`
 4. Search the project source code for each rule's dangerous patterns using Grep and Glob
 5. Read suspect files to verify findings in context
-6. Report findings using the format in `${CLAUDE_PLUGIN_ROOT}/../../core/reporting/format.md`
+6. Format every finding **exactly** as specified in `${CLAUDE_PLUGIN_ROOT}/../../core/reporting/format.md` — copy the finding template verbatim and only replace `{{...}}` placeholders. Follow the DO/DO NOT format rules in that file.
 7. Sort findings by severity (CRITICAL first)
-8. For CRITICAL and HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rules
+8. Include the Proof of Concept section only for CRITICAL and HIGH findings; omit it entirely for MEDIUM, LOW, and INFO. Adapt PoCs from the templates in the rules.
 
 For deeper remediation guidance, read the relevant cheatsheet from `${CLAUDE_PLUGIN_ROOT}/../../core/reference/cheatsheets/`

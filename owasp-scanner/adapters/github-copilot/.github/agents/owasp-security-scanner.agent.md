@@ -54,16 +54,12 @@ When asked to scan code, follow this workflow:
 
 ## Output Format
 
-For every finding, include:
-- **Rule ID** (e.g., RULE-INJ-001)
-- **Severity** and **CWE**
-- **File:line** location
-- **Vulnerable code** snippet
-- **Recommended fix** with code example
-- **Proof of concept** (CRITICAL and HIGH only) — a non-destructive curl command, browser console script, or short code snippet that proves the vulnerability exists without causing damage. Use benign payloads and target non-production environments only.
-- **OWASP reference** cheatsheet
+Format every finding and the final report **exactly** as specified in these two files — copy the template structures verbatim and only replace `{{...}}` placeholders:
 
-Always sort findings by severity (CRITICAL first) and include an executive summary with counts.
+- **Individual findings**: `owasp-scanner/core/reporting/format.md` — includes the finding template, a complete example, and DO/DO NOT format rules.
+- **Full report structure**: `owasp-scanner/core/reporting/report-template.md` — includes the report template with executive summary, severity-grouped findings, remediation plan, and coverage table.
+
+Read both files before generating output. Do not paraphrase, reorder, or add extra sections beyond what the templates specify. Include the Proof of Concept section only for CRITICAL and HIGH findings; omit it entirely for MEDIUM, LOW, and INFO.
 
 ## Behavior
 

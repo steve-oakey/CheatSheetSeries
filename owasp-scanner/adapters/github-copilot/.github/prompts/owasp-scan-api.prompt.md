@@ -16,7 +16,7 @@ Scan the current project for REST, GraphQL, WebSocket, and general API vulnerabi
    - `python.md` for Django REST/Flask/FastAPI
    - `generic.md` for other frameworks
 4. **Scan**: Check all API endpoint, controller, route, and resolver code
-5. **Report**: Use the format in `owasp-scanner/core/reporting/format.md`
+5. **Report**: Format every finding **exactly** as specified in `owasp-scanner/core/reporting/format.md`
 
 ## Key Vulnerabilities Covered
 
@@ -30,5 +30,5 @@ Scan the current project for REST, GraphQL, WebSocket, and general API vulnerabi
 - RULE-API-009: Verbose API error responses
 - RULE-API-010 through API-013: Rate limiting, API versioning, HATEOAS abuse, batch endpoint issues
 
-Present findings sorted by severity with code snippets and fixes.
-For HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rules.
+Present findings sorted by severity. Format every finding **exactly** as specified in `owasp-scanner/core/reporting/format.md` — copy the finding template verbatim and only replace `{{...}}` placeholders. Follow the DO/DO NOT format rules in that file.
+Include the Proof of Concept section only for CRITICAL and HIGH findings; omit it entirely for MEDIUM, LOW, and INFO. Adapt PoCs from the templates in the rules.

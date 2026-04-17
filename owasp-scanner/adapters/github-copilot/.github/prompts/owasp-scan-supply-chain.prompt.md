@@ -16,7 +16,7 @@ Scan the current project for secrets in code, vulnerable dependencies, CI/CD mis
    - `python.md` for pip, Python config
    - `generic.md` for CI/CD, Docker, infrastructure
 4. **Scan**: Check all source files, config files, dependency manifests, and CI/CD pipelines
-5. **Report**: Use the format in `owasp-scanner/core/reporting/format.md`
+5. **Report**: Format every finding **exactly** as specified in `owasp-scanner/core/reporting/format.md`
 
 ## Key Vulnerabilities Covered
 
@@ -29,5 +29,5 @@ Scan the current project for secrets in code, vulnerable dependencies, CI/CD mis
 - RULE-SC-010: Insecure certificate validation
 - RULE-SC-011/012: Container image security, SBOM/provenance
 
-Present findings sorted by severity with code snippets and fixes.
-For CRITICAL and HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rules.
+Present findings sorted by severity. Format every finding **exactly** as specified in `owasp-scanner/core/reporting/format.md` — copy the finding template verbatim and only replace `{{...}}` placeholders. Follow the DO/DO NOT format rules in that file.
+Include the Proof of Concept section only for CRITICAL and HIGH findings; omit it entirely for MEDIUM, LOW, and INFO. Adapt PoCs from the templates in the rules.

@@ -37,30 +37,10 @@ For each scanner, read the full rules and apply the language-specific patterns f
 
 ## Step 3: Generate Report
 
-Use the format defined in `owasp-scanner/core/reporting/format.md`. Present results as:
+Generate the final report by following **both** format specifications exactly:
 
-```
-## Security Scan Results
+1. **Report structure**: Read `owasp-scanner/core/reporting/report-template.md` and reproduce its structure verbatim. Only replace the `{{...}}` placeholders with actual values.
+2. **Individual findings**: Format every finding exactly as specified in `owasp-scanner/core/reporting/format.md`. Copy the finding template verbatim — only replace `{{...}}` placeholders. Follow the Format Rules and DO/DO NOT lists in that file.
+3. **PoC**: Include the Proof of Concept section only for CRITICAL and HIGH findings. Omit it entirely for MEDIUM, LOW, and INFO.
 
-**Project**: [name]
-**Scanned**: [date]
-**Technology Stack**: [detected stack]
-
-| Severity | Count |
-|----------|-------|
-| CRITICAL | N     |
-| HIGH     | N     |
-| MEDIUM   | N     |
-| LOW      | N     |
-| **Total** | **N** |
-```
-
-Then list all findings sorted by severity (CRITICAL first), using the standard finding format:
-- Rule ID, Severity, CWE
-- File:line
-- Vulnerable code snippet
-- Recommended fix
-- Proof of concept (CRITICAL and HIGH only) — a non-destructive command or script that demonstrates the vulnerability exists in a non-production environment
-- OWASP reference
-
-End with a **Remediation Priority** section: CRITICAL with easiest fixes first, then CRITICAL requiring code changes, then HIGH findings.
+Do not paraphrase, reorder, or add extra sections beyond what the templates specify.

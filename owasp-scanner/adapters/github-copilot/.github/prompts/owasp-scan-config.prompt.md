@@ -16,7 +16,7 @@ Scan the current project for security misconfigurations.
    - `python.md` for Django/Flask
    - `generic.md` for Nginx, Apache, Docker, Kubernetes
 4. **Scan**: Check all configuration files, security classes, and infrastructure definitions
-5. **Report**: Use the format in `owasp-scanner/core/reporting/format.md`
+5. **Report**: Format every finding **exactly** as specified in `owasp-scanner/core/reporting/format.md`
 
 ## Key Vulnerabilities Covered
 
@@ -31,5 +31,5 @@ Scan the current project for security misconfigurations.
 - RULE-CFG-012/013: Debug mode in production, verbose error messages
 - RULE-CFG-014 through CFG-018: Directory listing, logging config, session config
 
-Present findings sorted by severity with code snippets and fixes.
-For HIGH findings, include a non-destructive proof of concept adapted from the PoC templates in the rules.
+Present findings sorted by severity. Format every finding **exactly** as specified in `owasp-scanner/core/reporting/format.md` — copy the finding template verbatim and only replace `{{...}}` placeholders. Follow the DO/DO NOT format rules in that file.
+Include the Proof of Concept section only for CRITICAL and HIGH findings; omit it entirely for MEDIUM, LOW, and INFO. Adapt PoCs from the templates in the rules.

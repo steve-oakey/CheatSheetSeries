@@ -36,7 +36,7 @@ A fast triage scan focusing on the most critical and common vulnerabilities. Des
 ## Instructions
 
 1. Search for the patterns above across the entire project
-2. Report any matches using `core/reporting/format.md`
-3. For CRITICAL and HIGH findings, include a non-destructive proof of concept (curl, grep, or short script) adapted from the PoC templates in the rule definitions
-4. Include a summary count by severity
+2. Format every finding **exactly** as specified in `core/reporting/format.md` — copy the finding template verbatim and only replace `{{...}}` placeholders. Follow the DO/DO NOT format rules in that file.
+3. Include the Proof of Concept section only for CRITICAL and HIGH findings; omit it entirely for MEDIUM, LOW, and INFO. Adapt PoCs from the templates in the rule definitions.
+4. For the overall report, use the structure in `core/reporting/report-template.md` exactly — copy it verbatim and only replace `{{...}}` placeholders.
 5. Recommend running a full scan (`full-scan.md`) for comprehensive coverage

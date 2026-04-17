@@ -23,5 +23,10 @@ When asked to scan for security issues, load detailed rules from `owasp-scanner/
 9. DES/3DES/RC4/ECB mode -> use AES-256-GCM (CWE-327)
 10. Math.random() for security -> use SecureRandom (CWE-338)
 
-Report findings as: Rule ID, severity, CWE, file:line, code, fix.
-For CRITICAL and HIGH findings: include a non-destructive proof of concept (curl command, browser console script, or short code snippet) that proves the vulnerability exists. Target non-production environments only.
+## Report Format
+
+Format every finding **exactly** as specified in `owasp-scanner/core/reporting/format.md` — copy the finding template verbatim and only replace `{{...}}` placeholders. Follow the DO/DO NOT format rules in that file.
+
+For the full report, use the structure in `owasp-scanner/core/reporting/report-template.md` exactly.
+
+Include the Proof of Concept section only for CRITICAL and HIGH findings; omit it entirely for MEDIUM, LOW, and INFO. Do not paraphrase, reorder, or add extra sections beyond what the templates specify.

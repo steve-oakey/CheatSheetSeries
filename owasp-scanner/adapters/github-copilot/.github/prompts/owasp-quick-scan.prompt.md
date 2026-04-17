@@ -41,7 +41,7 @@ A fast triage scan focusing on the most critical and common vulnerabilities. Che
 ## Instructions
 
 1. Search for the patterns above across the entire project
-2. Report any matches using the format in `owasp-scanner/core/reporting/format.md`
-3. For CRITICAL and HIGH findings, include a non-destructive proof of concept (curl, grep, or short script) adapted from the PoC templates in the rule definitions
-4. Include a summary count by severity
+2. Format every finding **exactly** as specified in `owasp-scanner/core/reporting/format.md` — copy the finding template verbatim and only replace `{{...}}` placeholders. Follow the DO/DO NOT format rules in that file.
+3. Include the Proof of Concept section only for CRITICAL and HIGH findings; omit it entirely for MEDIUM, LOW, and INFO. Adapt PoCs from the templates in the rule definitions.
+4. For the overall report, use the structure in `owasp-scanner/core/reporting/report-template.md` exactly.
 5. Recommend running the full scan prompt (`owasp-scan-all`) for comprehensive coverage
